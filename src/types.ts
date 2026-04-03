@@ -1,4 +1,4 @@
-export type ObjektClass = 'Basic' | 'Special' | 'Event' | 'Unit' | 'Double';
+export type ObjektClass = 'Basic' | 'Special' | 'Event' | 'Unit' | 'Double' | 'Welcome';
 
 export interface Artist {
   id: string;
@@ -9,12 +9,15 @@ export interface Artist {
 
 export interface Objekt {
   id: string;
-  artistId: string;
-  artistName: string;
-  class: ObjektClass;
-  season: string;
-  typeId: string; // e.g., 101A, 202Z
+  name: string;
+  artist: string;
+  Season: string;
+  Type: string;
+  Class: string;
   imageUrl: string;
+  imageBackUrl: string;
+  borderColor: string;
+  textColor: string;
   serialNumber?: number;
   obtainedAt?: string;
 }
@@ -27,6 +30,10 @@ export interface Pack {
   imageUrl: string;
   possibleClasses: ObjektClass[];
   count: number;
+  season?: string;
+  class?: string;
+  range?: string;
+  typeCount?: number;
 }
 
 export interface UserStats {

@@ -20,7 +20,7 @@ export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose }) => {
     // Simulate gacha logic
     const newObjekts: Objekt[] = [];
     for (let i = 0; i < pack.count; i++) {
-      const possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.class));
+      const possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.Class as any));
       const random = possible[Math.floor(Math.random() * possible.length)];
       newObjekts.push({
         ...random,
@@ -57,7 +57,7 @@ export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose }) => {
             exit={{ scale: 1.2, opacity: 0 }}
             className="text-center space-y-8"
           >
-            <div className="relative w-64 aspect-[2/3] mx-auto rounded-[12px] overflow-hidden shadow-2xl shadow-[#6E2CFF]/20 border border-[#232A30]">
+            <div className="relative w-[236px] aspect-[2/3] mx-auto rounded-[12px] overflow-hidden shadow-2xl shadow-[#6E2CFF]/20 border border-[#232A30]">
               <img src={pack.imageUrl} alt={pack.name} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
                 <h2 className="text-xl font-bold text-[#FBFBFB]">{pack.name}</h2>
@@ -86,7 +86,7 @@ export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose }) => {
                 scale: [1, 1.1, 1]
               }}
               transition={{ duration: 1.5, repeat: Infinity }}
-              className="w-48 h-72 mx-auto bg-white/10 rounded-2xl border-2 border-white/20 flex items-center justify-center"
+              className="w-[172px] h-[268px] mx-auto bg-white/10 rounded-2xl border-2 border-white/20 flex items-center justify-center"
             >
               <div className="text-4xl">✨</div>
             </motion.div>

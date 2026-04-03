@@ -1,7 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Objekt } from '../types';
 import { cn } from '../lib/utils';
+import { LogoIcon } from './Icons';
 
 interface ObjektCardProps {
   objekt: Objekt;
@@ -14,51 +15,103 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
   objekt, 
   className, 
   onClick,
-  showDetails = true 
+  showDetails = true
 }) => {
+  const values = {
+    borderWidth: 10.95,
+    borderHeight: 88.3,
+    borderX: 0,
+    borderY: 50,
+    borderRadius: 4,
+    artistSize: 6,
+    artistX: 8,
+    artistY: 0.5,
+    typeSize: 6.4,
+    typeX: 48,
+    typeY: 50,
+    logoSize: 17,
+    logoX: 50,
+    logoY: 90.5,
+  };
+
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={cn(
-        "relative aspect-[2/3] w-full overflow-hidden rounded-[12px] cursor-pointer group bg-[#171C20]",
+        "relative w-full overflow-hidden rounded-[8px] cursor-pointer group bg-[#171C20]",
+        "aspect-[1/1.5448]",
         className
       )}
     >
       <img
         src={objekt.imageUrl}
-        alt={`${objekt.artistName} ${objekt.typeId}`}
+        alt={objekt.name}
         className="h-full w-full object-cover"
         referrerPolicy="no-referrer"
       />
       
-      {/* Vertical Info on the right */}
+      {/* Sidebar Border */}
       {showDetails && (
-        <div className="absolute top-0 right-0 bottom-0 w-8 flex flex-col items-center py-2 bg-black/20 backdrop-blur-[2px]">
-          <div className="flex-1 flex items-center justify-center">
-            <span className="rotate-90 whitespace-nowrap text-[10px] font-bold tracking-tighter text-[#FBFBFB] origin-center">
-              {objekt.artistName}
-            </span>
+        <div 
+          className="absolute flex flex-col items-center justify-between pointer-events-none"
+          style={{ 
+            backgroundColor: objekt.borderColor,
+            width: `${values.borderWidth}%`,
+            height: `${values.borderHeight}%`,
+            right: `${values.borderX}%`,
+            top: `${values.borderY}%`,
+            transform: 'translateY(-50%)',
+            borderRadius: `${values.borderRadius}px 0 0 ${values.borderRadius}px`,
+            fontFamily: "'Inter', sans-serif"
+          }}
+        >
+          {/* Artist Name */}
+          <div 
+            className="absolute whitespace-nowrap"
+            style={{
+              top: `${values.artistY}%`,
+              left: `${values.artistX}%`,
+              transform: 'rotate(90deg) translateY(-50%)',
+              transformOrigin: 'left center',
+              textAlign: 'left',
+              fontSize: `${values.artistSize}px`,
+              color: objekt.textColor,
+              fontWeight: 700
+            }}
+          >
+            {objekt.artist}
           </div>
-          <div className="flex-1 flex items-center justify-center">
-            <span className="rotate-90 whitespace-nowrap text-[10px] font-mono text-[#D0D7DD]/60 origin-center">
-              {objekt.typeId}
-            </span>
-          </div>
-          <div className="flex-1 flex items-center justify-center">
-            <span className="rotate-90 whitespace-nowrap text-[8px] font-bold text-[#D0D7DD]/40 origin-center uppercase">
-              COSMO
-            </span>
-          </div>
-        </div>
-      )}
 
-      {/* Quantity Badge at bottom left */}
-      {showDetails && (
-        <div className="absolute bottom-2 left-2 flex items-center gap-1">
-          <div className="bg-[#171C20]/80 backdrop-blur-md rounded-full px-2 py-0.5 border border-[#232A30]">
-            <span className="text-[10px] font-bold text-[#FBFBFB]">3</span>
+          {/* Logo */}
+          <div 
+            className="absolute flex items-center justify-center"
+            style={{
+              top: `${values.logoY}%`,
+              left: `${values.logoX}%`,
+              transform: 'translate(-50%, -50%) rotate(90deg)',
+              width: `${values.logoSize}px`,
+              height: `${values.logoSize}px`,
+              color: objekt.textColor
+            }}
+          >
+            <LogoIcon className="w-full h-full" />
+          </div>
+
+          {/* Type Number */}
+          <div 
+            className="absolute flex items-center justify-center whitespace-nowrap"
+            style={{
+              top: `${values.typeY}%`,
+              left: `${values.typeX}%`,
+              transform: 'translate(-50%, -50%) rotate(90deg)',
+              fontSize: `${values.typeSize}px`,
+              color: objekt.textColor,
+              fontWeight: 700
+            }}
+          >
+            {objekt.Type}
           </div>
         </div>
       )}
