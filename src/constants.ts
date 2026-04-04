@@ -45,7 +45,7 @@ export const OBJEKT_POOL: Objekt[] = [
     Class: 'Event', 
     imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/53940716-9fc7-42ae-165a-1423055f6800/original', 
     imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/d77567ae-01db-4769-51c5-a9c48e14f100/original',
-    borderColor: '#FFFFFF4D',
+    borderColor: '#FFFFFF',
     textColor: '#000000'
   }
 ];

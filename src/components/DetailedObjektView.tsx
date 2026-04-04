@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'motion/react';
-import { ChevronLeft, Send, Pin, Layers, Flashlight, Settings2, Plus, Minus } from 'lucide-react';
+import { motion, useMotionValue, useSpring, AnimatePresence } from 'motion/react';
+import { ChevronLeft, Send, Pin, Layers, Flashlight } from 'lucide-react';
 import { Objekt } from '../types';
 import { cn } from '../lib/utils';
 import { LogoIcon } from './Icons';
@@ -10,72 +10,10 @@ interface DetailedObjektViewProps {
   onClose: () => void;
 }
 
-interface DebugValues {
-  headerTopPadding: number;
-  headerHorizontalPadding: number;
-  objektCornerRadius: number;
-  objektSize: number;
-  buttonsSize: number;
-  buttonIconsSize: number;
-  inactiveButtonBorderSize: number;
-  gapBetweenButtons: number;
-  sendButtonTextSize: number;
-  sendButtonTextWeight: number;
-  borderCornerRadius: number;
-  artistNameX: number;
-  artistNameY: number;
-  artistNameSize: number;
-  artistNameKerning: number;
-  typeTextSize: number;
-  typeTextKerning: number;
-  serialTextSize: number;
-  serialTextKerning: number;
-  gapTypeSerial: number;
-  groupY: number;
-  groupX: number;
-  logoY: number;
-  logoX: number;
-  logoSize: number;
-  backGroupY: number;
-  backGroupX: number;
-  gapObjektButtons: number;
-}
-
 export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, onClose }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isFlashActive, setIsFlashActive] = useState(false);
-  const [showDebug, setShowDebug] = useState(false);
   const isDragging = useRef(false);
-  const [debugValues, setDebugValues] = useState<DebugValues>({
-    headerTopPadding: 20,
-    headerHorizontalPadding: 20,
-    objektCornerRadius: 16,
-    objektSize: 320,
-    buttonsSize: 52,
-    buttonIconsSize: 24,
-    inactiveButtonBorderSize: 2,
-    gapBetweenButtons: 20,
-    sendButtonTextSize: 15,
-    sendButtonTextWeight: 600,
-    borderCornerRadius: 8,
-    artistNameX: 8,
-    artistNameY: 0.5,
-    artistNameSize: 14,
-    artistNameKerning: 0,
-    typeTextSize: 15,
-    typeTextKerning: 0,
-    serialTextSize: 15,
-    serialTextKerning: 0,
-    gapTypeSerial: 4,
-    groupY: 50,
-    groupX: 48,
-    logoY: 90.5,
-    logoX: 50,
-    logoSize: 40,
-    backGroupY: 50,
-    backGroupX: 50,
-    gapObjektButtons: 48,
-  });
 
   // 3D Rotation State
   const x = useMotionValue(0);
@@ -119,14 +57,6 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
     x.set(target);
   };
 
-  const updateDebug = (key: keyof DebugValues, delta: number) => {
-    let actualDelta = delta;
-    if (key.toLowerCase().includes('weight')) {
-      actualDelta = delta > 0 ? 100 : -100;
-    }
-    setDebugValues(prev => ({ ...prev, [key]: Number((prev[key] + actualDelta).toFixed(3)) }));
-  };
-
   const borderValues = {
     width: 10.95,
     height: 88.3,
@@ -146,9 +76,9 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
       <div 
         className="flex items-center justify-between w-full"
         style={{ 
-          paddingTop: `${debugValues.headerTopPadding}px`,
-          paddingLeft: `${debugValues.headerHorizontalPadding}px`,
-          paddingRight: `${debugValues.headerHorizontalPadding}px`,
+          paddingTop: '5px',
+          paddingLeft: '12px',
+          paddingRight: '12px',
           color: '#D0D7DD'
         }}
       >
@@ -156,8 +86,8 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
           <ChevronLeft size={28} />
         </button>
         <button className="flex items-center gap-2">
-          <Send size={20} />
-          <span style={{ fontSize: `${debugValues.sendButtonTextSize}px`, fontWeight: debugValues.sendButtonTextWeight }}>
+          <Send size={19} />
+          <span style={{ fontSize: '14px', fontWeight: 600 }}>
             Send
           </span>
         </button>
@@ -166,14 +96,14 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
       {/* Main Content */}
       <div 
         className="flex-1 flex flex-col items-center justify-center"
-        style={{ gap: `${debugValues.gapObjektButtons}px` }}
+        style={{ gap: '40px' }}
       >
         {/* Objekt Container */}
         <div 
           className="relative perspective-1000"
           style={{
-            width: `${debugValues.objektSize}px`,
-            height: `${debugValues.objektSize * 1.5448}px`,
+            width: '305px',
+            height: `${305 * 1.5448}px`,
           }}
         >
           <motion.div
@@ -195,7 +125,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
             <div 
               className="absolute inset-0 backface-hidden overflow-hidden pointer-events-none"
               style={{ 
-                borderRadius: `${debugValues.objektCornerRadius}px`,
+                borderRadius: '16px',
                 backgroundColor: '#171C20'
               }}
             >
@@ -217,21 +147,21 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
                     right: `0%`,
                     top: `50%`,
                     transform: 'translateY(-50%)',
-                    borderRadius: `${debugValues.borderCornerRadius}px 0 0 ${debugValues.borderCornerRadius}px`,
+                    borderRadius: '10px 0 0 10px',
                   }}
                 >
                   {/* Artist Name */}
                   <div 
                     className="absolute whitespace-nowrap font-bold"
                     style={{
-                      top: `${debugValues.artistNameY}%`,
-                      left: `${debugValues.artistNameX}%`,
+                      top: '0.5%',
+                      left: '8%',
                       transform: 'rotate(90deg) translateY(-50%)',
                       transformOrigin: 'left center',
                       textAlign: 'left',
-                      fontSize: `${debugValues.artistNameSize}px`,
+                      fontSize: '17px',
                       color: objekt.textColor,
-                      letterSpacing: `${debugValues.artistNameKerning}px`,
+                      letterSpacing: '0px',
                       fontFamily: "'Inter', sans-serif"
                     }}
                   >
@@ -242,11 +172,11 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
                   <div 
                     className="absolute flex items-center justify-center"
                     style={{
-                      top: `${debugValues.logoY}%`,
-                      left: `${debugValues.logoX}%`,
+                      top: '91.5%',
+                      left: '50%',
                       transform: 'translate(-50%, -50%) rotate(90deg)',
-                      width: `${debugValues.logoSize}px`,
-                      height: `${debugValues.logoSize}px`,
+                      width: '46px',
+                      height: '46px',
                       color: objekt.textColor
                     }}
                   >
@@ -257,24 +187,24 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
                   <div 
                     className="absolute flex items-center whitespace-nowrap"
                     style={{
-                      top: `${debugValues.groupY}%`,
-                      left: `${debugValues.groupX}%`,
+                      top: '50%',
+                      left: 'calc(50% - 1px)',
                       transform: 'translate(-50%, -50%) rotate(90deg)',
-                      gap: `${debugValues.gapTypeSerial}px`,
+                      gap: '6px',
                       color: objekt.textColor,
                     }}
                   >
                     <span style={{ 
-                      fontSize: `${debugValues.typeTextSize}px`, 
-                      letterSpacing: `${debugValues.typeTextKerning}px`,
+                      fontSize: '16px', 
+                      letterSpacing: '0px',
                       fontWeight: 700,
                       fontFamily: "'Inter', sans-serif"
                     }}>
                       {objekt.Type}
                     </span>
                     <span style={{ 
-                      fontSize: `${debugValues.serialTextSize}px`, 
-                      letterSpacing: `${debugValues.serialTextKerning}px`,
+                      fontSize: '16px', 
+                      letterSpacing: '0px',
                       fontFamily: "'DotMatrix', sans-serif"
                     }}>
                       #{String(objekt.serialNumber || 0).padStart(5, '0')}
@@ -288,7 +218,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
             <div 
               className="absolute inset-0 backface-hidden overflow-hidden pointer-events-none"
               style={{ 
-                borderRadius: `${debugValues.objektCornerRadius}px`,
+                borderRadius: '16px',
                 backgroundColor: '#171C20',
                 transform: 'rotateY(180deg)'
               }}
@@ -304,24 +234,24 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
               <div 
                 className="absolute flex items-center whitespace-nowrap"
                 style={{
-                  top: `${debugValues.backGroupY}%`,
-                  left: `${debugValues.backGroupX}%`,
+                  top: '50%',
+                  left: '85%',
                   transform: 'translate(-50%, -50%) rotate(90deg)',
-                  gap: `${debugValues.gapTypeSerial}px`,
-                  color: '#FFFFFF',
+                  gap: '6px',
+                  color: objekt.textColor,
                 }}
               >
                 <span style={{ 
-                  fontSize: `${debugValues.typeTextSize}px`, 
-                  letterSpacing: `${debugValues.typeTextKerning}px`,
+                  fontSize: '16px', 
+                  letterSpacing: '0px',
                   fontWeight: 700,
                   fontFamily: "'Inter', sans-serif"
                 }}>
                   {objekt.Type}
                 </span>
                 <span style={{ 
-                  fontSize: `${debugValues.serialTextSize}px`, 
-                  letterSpacing: `${debugValues.serialTextKerning}px`,
+                  fontSize: '16px', 
+                  letterSpacing: '0px',
                   fontFamily: "'DotMatrix', sans-serif"
                 }}>
                   #{String(objekt.serialNumber || 0).padStart(5, '0')}
@@ -334,81 +264,26 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
         {/* Action Buttons */}
         <div 
           className="flex items-center"
-          style={{ gap: `${debugValues.gapBetweenButtons}px` }}
+          style={{ gap: '36px' }}
         >
           <ActionButton 
-            icon={<Pin size={debugValues.buttonIconsSize} />} 
-            size={debugValues.buttonsSize}
-            borderSize={debugValues.inactiveButtonBorderSize}
+            icon={<Pin size={26} />} 
+            size={46}
+            borderSize={2.2}
           />
           <ActionButton 
-            icon={<Layers size={debugValues.buttonIconsSize} />} 
-            size={debugValues.buttonsSize}
-            borderSize={debugValues.inactiveButtonBorderSize}
+            icon={<Layers size={26} />} 
+            size={46}
+            borderSize={2.2}
           />
           <ActionButton 
-            icon={<Flashlight size={debugValues.buttonIconsSize} />} 
-            size={debugValues.buttonsSize}
-            borderSize={debugValues.inactiveButtonBorderSize}
+            icon={<Flashlight size={26} />} 
+            size={46}
+            borderSize={2.2}
             active={isFlashActive}
             onClick={() => setIsFlashActive(!isFlashActive)}
           />
         </div>
-      </div>
-
-      {/* Debug Menu */}
-      <div className="fixed bottom-8 right-8 z-[110]">
-        <button 
-          onClick={() => setShowDebug(!showDebug)}
-          className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-xl"
-        >
-          <Settings2 size={24} />
-        </button>
-
-        <AnimatePresence>
-          {showDebug && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, x: 20 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.9, x: 20 }}
-              className="absolute bottom-16 right-0 w-[258px] max-h-[calc(70vh-25px)] overflow-y-auto bg-black/20 border border-white/10 rounded-2xl p-4 custom-scrollbar shadow-2xl"
-            >
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold text-white/50 uppercase tracking-wider">Debug Menu</h3>
-                
-                {Object.entries(debugValues).map(([key, value]) => (
-                  <div key={key} className="flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] text-white/70 font-medium truncate pr-2">{key.replace(/([A-Z])/g, ' $1')}</span>
-                      <span className="text-[10px] font-mono text-white bg-white/10 px-1.5 py-0.5 rounded">{value}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <button 
-                        onClick={() => updateDebug(key as keyof DebugValues, -1)}
-                        className="flex-1 h-7 bg-white/5 hover:bg-white/10 rounded flex items-center justify-center text-white transition-colors"
-                      >
-                        <Minus size={12} />
-                      </button>
-                      <input 
-                        type="number"
-                        step="any"
-                        value={value}
-                        onChange={(e) => setDebugValues(prev => ({ ...prev, [key]: parseFloat(e.target.value) || 0 }))}
-                        className="w-16 h-7 bg-white/5 border border-white/10 rounded text-[10px] text-white text-center font-mono"
-                      />
-                      <button 
-                        onClick={() => updateDebug(key as keyof DebugValues, 1)}
-                        className="flex-1 h-7 bg-white/5 hover:bg-white/10 rounded flex items-center justify-center text-white transition-colors"
-                      >
-                        <Plus size={12} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
