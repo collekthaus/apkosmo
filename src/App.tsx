@@ -112,7 +112,7 @@ export default function App() {
     }
     
     if (initialInventory.length === 0) {
-      initialInventory = [OBJEKT_POOL[0]];
+      initialInventory = [OBJEKT_POOL[0], OBJEKT_POOL[2]];
     }
     
     setInventory(initialInventory);
@@ -217,14 +217,18 @@ export default function App() {
       {activeTab !== 'shop' && activeTab !== 'pack-detail' && (
         <header 
           className={`sticky top-0 z-40 bg-[#08090B] flex flex-col overflow-hidden ${activeTab === 'collect' ? 'pt-[13px] pb-0' : 'py-[13px] px-4'}`}
-          style={activeTab === 'home' ? {
-            backgroundImage: 'url("https://cdn.discordapp.com/attachments/481245079311482894/1453804945194356806/1000313779.jpg?ex=69ceaa5d&is=69cd58dd&hm=2e9b91260c69353215077b8d2b35dbd9155173e82381a7e21011d59a7414629d&")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center calc(50% - 10px)'
-          } : {}}
         >
-          {/* Overlay to ensure readability if needed, though the image looks dark enough */}
-          {activeTab === 'home' && <div className="absolute inset-0 bg-black/20 pointer-events-none" />}
+          {activeTab === 'home' && (
+            <>
+              <img 
+                src="https://cdn.discordapp.com/attachments/481245079311482894/1453804945194356806/1000313779.jpg?ex=69ceaa5d&is=69cd58dd&hm=2e9b91260c69353215077b8d2b35dbd9155173e82381a7e21011d59a7414629d&"
+                alt="Header Background"
+                className="absolute inset-0 w-full h-full object-cover object-[center_calc(50%-10px)]"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+            </>
+          )}
           
           <div className={`flex justify-between items-center w-full relative z-10 ${activeTab === 'collect' ? 'pl-4 pr-[24px]' : ''}`}>
             <div className="flex items-center gap-1">
@@ -889,17 +893,22 @@ function HeroCarousel() {
             }}
             className="absolute inset-0 cursor-grab active:cursor-grabbing"
           >
-            <div 
-              className="w-full h-full bg-cover bg-center flex items-center justify-center relative"
-              style={{ backgroundImage: `url(${HERO_IMAGES[currentIndex].url})` }}
-            >
+            <div className="w-full h-full relative">
+              <img 
+                src={HERO_IMAGES[currentIndex].url} 
+                alt={HERO_IMAGES[currentIndex].title}
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+              />
               <div className="absolute inset-0 bg-black/30" />
-              <div className="text-center relative z-10 select-none">
-                <h2 className="text-3xl font-black tracking-tighter italic text-[#FBFBFB] opacity-90">
-                  {HERO_IMAGES[currentIndex].title}
-                </h2>
-                <div className="flex gap-4 mt-2 text-[8px] uppercase tracking-widest text-[#D0D7DD]/60">
-                  {HERO_IMAGES[currentIndex].tags.map(tag => <span key={tag}>{tag}</span>)}
+              <div className="absolute inset-0 flex items-center justify-center z-10 select-none">
+                <div className="text-center">
+                  <h2 className="text-3xl font-black tracking-tighter italic text-[#FBFBFB] opacity-90">
+                    {HERO_IMAGES[currentIndex].title}
+                  </h2>
+                  <div className="flex gap-4 mt-2 text-[8px] uppercase tracking-widest text-[#D0D7DD]/60">
+                    {HERO_IMAGES[currentIndex].tags.map(tag => <span key={tag}>{tag}</span>)}
+                  </div>
                 </div>
               </div>
             </div>

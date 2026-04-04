@@ -61,7 +61,7 @@ export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose, totalOb
             className="text-center space-y-8"
           >
             <div className="relative w-[236px] aspect-[2/3] mx-auto rounded-[12px] overflow-hidden shadow-2xl shadow-[#6E2CFF]/20 border border-[#232A30]">
-              <img src={pack.imageUrl} alt={pack.name} className="w-full h-full object-cover" />
+              <img src={pack.imageUrl} alt={pack.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
                 <h2 className="text-xl font-bold text-[#FBFBFB]">{pack.name}</h2>
                 <p className="text-sm text-[#D0D7DD]/60">{pack.count} Objekts</p>
