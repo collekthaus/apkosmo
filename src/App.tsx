@@ -17,7 +17,8 @@ import {
   ChevronRight,
   ChevronLeft,
   Heart,
-  Check
+  Check,
+  Pin
 } from 'lucide-react';
 import { Objekt, Pack, UserStats } from './types';
 import { PACKS, OBJEKT_POOL } from './constants';
@@ -34,6 +35,8 @@ import {
   RoomIcon,
   ProfileIcon
 } from './components/Icons';
+
+import { DetailedObjektView } from './components/DetailedObjektView';
 
 type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail';
 
@@ -81,6 +84,18 @@ export default function App() {
   const [openingPack, setOpeningPack] = useState<Pack | null>(null);
   const [selectedPack, setSelectedPack] = useState<Pack | null>(null);
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
+  const [selectedUnifiedObjektId, setSelectedUnifiedObjektId] = useState<string | null>(null);
+  const [selectedObjektForDetail, setSelectedObjektForDetail] = useState<Objekt | null>(null);
+
+  const unifiedInventory = inventory.reduce((acc, objekt) => {
+    const existing = acc.find(o => o.id === objekt.id);
+    if (existing) {
+      existing.count = (existing.count || 1) + 1;
+    } else {
+      acc.push({ ...objekt, count: 1 });
+    }
+    return acc;
+  }, [] as (Objekt & { count?: number })[]);
 
   // Load from local storage
   useEffect(() => {
@@ -137,13 +152,15 @@ export default function App() {
 
   const generateObjektsFromPack = (pack: Pack, quantity: number): Objekt[] => {
     const newObjekts: Objekt[] = [];
+    let currentTotal = stats.totalObjekts;
     for (let q = 0; q < quantity; q++) {
       for (let i = 0; i < pack.count; i++) {
         const possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.Class as any));
         const random = possible[Math.floor(Math.random() * possible.length)];
+        currentTotal++;
         newObjekts.push({
           ...random,
-          serialNumber: Math.floor(Math.random() * 99999) + 1,
+          serialNumber: currentTotal,
           obtainedAt: new Date().toISOString()
         });
       }
@@ -161,7 +178,7 @@ export default function App() {
     }
 
     const newObjekts = generateObjektsFromPack(selectedPack, selectedQuantity);
-    const updatedInventory = [...inventory, ...newObjekts];
+    const updatedInventory = [...newObjekts, ...inventory];
     setInventory(updatedInventory);
     
     const uniqueIds = new Set(updatedInventory.map(o => o.id));
@@ -179,7 +196,7 @@ export default function App() {
   };
 
   const handlePackFinish = (newObjekts: Objekt[]) => {
-    const updatedInventory = [...inventory, ...newObjekts];
+    const updatedInventory = [...newObjekts, ...inventory];
     setInventory(updatedInventory);
     
     const uniqueIds = new Set(updatedInventory.map(o => o.id));
@@ -341,7 +358,7 @@ export default function App() {
               </div>
 
               {/* Count & Sort */}
-              <div className="px-4 py-2 flex justify-between items-center text-[13.5px] font-medium text-[#D2D7DD]">
+              <div className="px-4 py-2 flex justify-between items-center text-[13px] font-medium text-[#D2D7DD]">
                 <span>{inventory.length} types</span>
                 <div className="flex items-center gap-1">
                   <span>Newest</span>
@@ -351,7 +368,7 @@ export default function App() {
 
               {/* Grid */}
               <div className="px-4 grid grid-cols-3 gap-2 mt-2">
-                {inventory.length === 0 ? (
+                {unifiedInventory.length === 0 ? (
                   <div className="col-span-3 flex flex-col items-center justify-center py-32">
                     <img 
                       src="https://cdn.discordapp.com/attachments/481245079311482894/1489672671519309874/assets_images_image_empty_objekt.png?ex=69d14549&is=69cff3c9&hm=814123dcba353030ac8b129ad588ca68a76d782dbb48763c6b29268d96ec95ac&" 
@@ -364,13 +381,63 @@ export default function App() {
                     </p>
                   </div>
                 ) : (
-                  inventory.map((objekt, idx) => (
+                  unifiedInventory.map((objekt, idx) => (
                     <ObjektCard 
                       key={`${objekt.id}-${idx}`} 
                       objekt={objekt} 
+                      count={objekt.count}
+                      className="rounded-[7px]"
+                      onClick={() => {
+                        if (objekt.count && objekt.count > 1) {
+                          setSelectedUnifiedObjektId(objekt.id);
+                        } else {
+                          setSelectedObjektForDetail(objekt);
+                        }
+                      }}
                     />
                   ))
                 )}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Unified Detail View */}
+          {selectedUnifiedObjektId && (
+            <motion.div
+              key="unified-detail"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="fixed inset-0 z-[60] bg-[#08090B] flex flex-col"
+            >
+              <div className="px-4 py-4 flex items-center justify-between">
+                <button onClick={() => setSelectedUnifiedObjektId(null)}>
+                  <ChevronLeft size={24} className="text-[#FBFBFB]" />
+                </button>
+                <h2 className="text-[15px] font-semibold text-[#FBFBFB]">
+                  {inventory.find(o => o.id === selectedUnifiedObjektId)?.Type}
+                </h2>
+                <Pin size={20} className="text-[#FBFBFB]" />
+              </div>
+              
+              <div className="px-4 pt-1 pb-4 overflow-y-auto flex-1 custom-scrollbar">
+                <p className="text-[13px] font-medium text-[#D2D7DD] mb-4">
+                  {inventory.filter(o => o.id === selectedUnifiedObjektId).length} items
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {inventory
+                    .filter(o => o.id === selectedUnifiedObjektId)
+                    .map((objekt, idx) => (
+                      <ObjektCard 
+                        key={`${objekt.id}-${idx}`} 
+                        objekt={objekt} 
+                        serialTag={`#${String(objekt.serialNumber || 0).padStart(5, '0')}`}
+                        showDetails={false}
+                        className="rounded-[7px]"
+                        onClick={() => setSelectedObjektForDetail(objekt)}
+                      />
+                    ))}
+                </div>
               </div>
             </motion.div>
           )}
@@ -537,8 +604,16 @@ export default function App() {
 
                 {/* Objekt Preview (copied from shop item) */}
                 <div className="relative w-full h-full flex items-center justify-center">
-                  {/* White radial glow behind the objekt - 60% opacity, 25px blur, 40% size */}
-                  <div className="absolute w-[40%] h-[40%] bg-white/60 blur-[25px] rounded-full pointer-events-none" />
+                  {/* White radial glow behind the objekt - 65% opacity, 20px blur, 32% size */}
+                  <div 
+                    className="absolute bg-white rounded-full pointer-events-none" 
+                    style={{
+                      width: '32%',
+                      height: '32%',
+                      opacity: 0.65,
+                      filter: 'blur(20px)'
+                    }}
+                  />
 
                   <div className="relative w-full h-full flex items-center justify-center p-4">
                     {/* Objekt Card in the center */}
@@ -548,7 +623,9 @@ export default function App() {
                       ) || OBJEKT_POOL[0];
                       return (
                         <>
-                          <div className="relative h-[80%] aspect-[1/1.5448] rounded-[6px] overflow-hidden shadow-2xl">
+                          <div 
+                            className="relative h-[80%] aspect-[1/1.5448] overflow-hidden shadow-2xl rounded-[8px]"
+                          >
                             <img 
                               src={representativeObjekt.imageUrl} 
                               alt={representativeObjekt.name}
@@ -586,18 +663,34 @@ export default function App() {
               </div>
 
               {/* Pack Info */}
-              <div className="px-[21px] pt-[27px] space-y-1">
-                <h2 className="text-[22px] font-bold text-[#FBFBFB]">{selectedPack.name}</h2>
-                <p className="text-[14px] font-medium text-[#AEB7BE]">{selectedPack.description}</p>
-                <div className="flex items-center gap-1 pt-1">
-                  <span className="text-[12px] font-medium text-[#B49CFE]">{selectedPack.class}</span>
-                  <span className="text-[12px] font-medium text-[#7E8892]">· {selectedPack.range} ({selectedPack.typeCount} types)</span>
+              <div 
+                className="space-y-0 px-4 pt-[18px]"
+              >
+                <div className="mb-[3px]">
+                  <h2 className="text-[19px] font-semibold text-[#FBFBFB]">
+                    {selectedPack.name}
+                  </h2>
+                </div>
+                <div className="mb-[3px]">
+                  <p className="text-[13px] font-medium text-[#AEB7BE]">
+                    {selectedPack.description}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1 pt-[3px]">
+                  <span className="text-[13px] font-medium text-[#B49CFE]">
+                    {selectedPack.class}
+                  </span>
+                  <span className="text-[13px] font-medium text-[#7E8892]">
+                    · {selectedPack.range} ({selectedPack.typeCount} types)
+                  </span>
                 </div>
               </div>
 
               {/* Options */}
-              <div className="px-[21px] pt-[35px] space-y-4">
-                <h3 className="text-[14px] font-bold text-[#FBFBFB]">Option</h3>
+              <div className="space-y-4 px-4 pt-[24px]">
+                <h3 className="text-[13px] font-bold text-[#FBFBFB]">
+                  Option
+                </h3>
                 <div className="space-y-3">
                   {[1, 4, 8, 12].map((qty) => (
                     <button
@@ -620,7 +713,7 @@ export default function App() {
                         <span className="text-[15px] font-medium text-[#FBFBFB]">{qty}x</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <ComoIcon className="w-[14px] h-[14px] text-[#395EC6]" />
+                        <ComoIcon className="w-[16px] h-[16px] text-[#395EC6]" />
                         <span className="text-[15px] font-bold text-[#FBFBFB]">{(selectedPack.price * qty).toFixed(2)}</span>
                       </div>
                     </button>
@@ -629,10 +722,10 @@ export default function App() {
               </div>
 
               {/* Purchase Button */}
-              <div className="fixed bottom-0 left-0 right-0 px-[21px] py-6 bg-[#08090B]/80 backdrop-blur-md">
+              <div className="fixed bottom-0 left-0 right-0 py-6 bg-[#08090B] px-4">
                 <button
                   onClick={handlePurchase}
-                  className="w-full h-[56px] bg-[#6E2CFF] text-white text-[16px] font-semibold rounded-[13px]"
+                  className="w-full bg-[#6E2CFF] text-white font-semibold rounded-[13px] h-[50px] text-[14.5px]"
                 >
                   Purchase {selectedQuantity} item{selectedQuantity > 1 ? 's' : ''}
                 </button>
@@ -686,6 +779,17 @@ export default function App() {
           <PackOpening 
             pack={openingPack} 
             onClose={handlePackFinish} 
+            totalObjekts={stats.totalObjekts}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Detailed Objekt View */}
+      <AnimatePresence>
+        {selectedObjektForDetail && (
+          <DetailedObjektView 
+            objekt={selectedObjektForDetail} 
+            onClose={() => setSelectedObjektForDetail(null)} 
           />
         )}
       </AnimatePresence>

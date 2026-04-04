@@ -8,9 +8,10 @@ import confetti from 'canvas-confetti';
 interface PackOpeningProps {
   pack: Pack;
   onClose: (newObjekts: Objekt[]) => void;
+  totalObjekts: number;
 }
 
-export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose }) => {
+export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose, totalObjekts }) => {
   const [step, setStep] = useState<'closed' | 'opening' | 'revealed'>('closed');
   const [revealedObjekts, setRevealedObjekts] = useState<Objekt[]>([]);
 
@@ -19,12 +20,14 @@ export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose }) => {
     
     // Simulate gacha logic
     const newObjekts: Objekt[] = [];
+    let currentTotal = totalObjekts;
     for (let i = 0; i < pack.count; i++) {
       const possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.Class as any));
       const random = possible[Math.floor(Math.random() * possible.length)];
+      currentTotal++;
       newObjekts.push({
         ...random,
-        serialNumber: Math.floor(Math.random() * 99999) + 1,
+        serialNumber: currentTotal,
         obtainedAt: new Date().toISOString()
       });
     }

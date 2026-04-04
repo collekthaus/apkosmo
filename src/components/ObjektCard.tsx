@@ -9,14 +9,38 @@ interface ObjektCardProps {
   className?: string;
   onClick?: () => void;
   showDetails?: boolean;
+  count?: number;
+  serialTag?: string;
 }
 
 export const ObjektCard: React.FC<ObjektCardProps> = ({ 
   objekt, 
   className, 
   onClick,
-  showDetails = true
+  showDetails = true,
+  count,
+  serialTag
 }) => {
+  const [isNew, setIsNew] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!objekt.obtainedAt) {
+      setIsNew(false);
+      return;
+    }
+
+    const checkNew = () => {
+      const obtainedDate = new Date(objekt.obtainedAt!);
+      const now = new Date();
+      const diffMinutes = (now.getTime() - obtainedDate.getTime()) / (1000 * 60);
+      setIsNew(diffMinutes < 5);
+    };
+
+    checkNew();
+    const interval = setInterval(checkNew, 10000); // Check every 10 seconds
+    return () => clearInterval(interval);
+  }, [objekt.obtainedAt]);
+
   const values = {
     borderWidth: 10.95,
     borderHeight: 88.3,
@@ -51,6 +75,72 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
         className="h-full w-full object-cover"
         referrerPolicy="no-referrer"
       />
+
+      {/* New Tag */}
+      {isNew && (
+        <div 
+          className="absolute z-20 flex items-center justify-center font-['Pretendard']"
+          style={{
+            top: '8px',
+            left: '7px',
+            backgroundColor: '#6E2DFD',
+            border: '1.3px solid #8B55FF',
+            borderRadius: '8px',
+            padding: '5px 7px',
+            color: '#FFFFFF',
+            fontSize: '10px',
+            fontWeight: 500,
+            letterSpacing: '0px',
+            lineHeight: 1
+          }}
+        >
+          New
+        </div>
+      )}
+
+      {/* Count Tag - Bottom Left */}
+      {count && count > 1 && (
+        <div 
+          className="absolute z-20 flex items-center justify-center font-['Pretendard']"
+          style={{
+            bottom: '7px',
+            left: '7px',
+            backgroundColor: '#090A0C',
+            border: '1.4px solid #161B1F',
+            borderRadius: '8px',
+            padding: '4px 6px',
+            color: '#FFFFFF',
+            fontSize: '10px',
+            fontWeight: 500,
+            letterSpacing: '0px',
+            lineHeight: 1
+          }}
+        >
+          {count}
+        </div>
+      )}
+
+      {/* Serial Tag - Bottom Left */}
+      {serialTag && (
+        <div 
+          className="absolute z-20 flex items-center justify-center font-['Pretendard']"
+          style={{
+            bottom: '7px',
+            left: '7px',
+            backgroundColor: '#090A0C',
+            border: '1.4px solid #161B1F',
+            borderRadius: '8px',
+            padding: '4px 6px',
+            color: '#FFFFFF',
+            fontSize: '10px',
+            fontWeight: 500,
+            letterSpacing: '0px',
+            lineHeight: 1
+          }}
+        >
+          {serialTag}
+        </div>
+      )}
       
       {/* Sidebar Border */}
       {showDetails && (
