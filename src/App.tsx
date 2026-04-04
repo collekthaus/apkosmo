@@ -43,7 +43,7 @@ type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-d
 const HERO_IMAGES = [
   {
     id: 1,
-    url: "https://cdn.discordapp.com/attachments/481245079311482894/1453804945194356806/1000313779.jpg?ex=69ceaa5d&is=69cd58dd&hm=2e9b91260c69353215077b8d2b35dbd9155173e82381a7e21011d59a7414629d&",
+    url: "/images/Header.png",
     title: "find your cosmo",
     tags: ["unevermst", "yeswaare", "itsnotover"]
   },
@@ -221,7 +221,7 @@ export default function App() {
           {activeTab === 'home' && (
             <>
               <img 
-                src="https://cdn.discordapp.com/attachments/481245079311482894/1453804945194356806/1000313779.jpg?ex=69ceaa5d&is=69cd58dd&hm=2e9b91260c69353215077b8d2b35dbd9155173e82381a7e21011d59a7414629d&"
+                src="/images/Header.png"
                 alt="Header Background"
                 className="absolute inset-0 w-full h-full object-cover object-[center_calc(50%-10px)]"
                 referrerPolicy="no-referrer"
@@ -280,7 +280,7 @@ export default function App() {
               {/* Announcement */}
               <div className="px-4">
                 <div className="bg-[#171C20] rounded-[12px] px-4 py-[14px] flex items-center gap-3">
-                  <img src="https://cdn.discordapp.com/attachments/481245079311482894/1489375287434154174/IMG_20260402_182506.png?ex=69d03053&is=69ceded3&hm=79e294fb08463cb3bfec5db3419f1dc2a47b1d55f012370269fe5add4f863e2c&" alt="Announcement" className="w-[25px] h-[25px]" referrerPolicy="no-referrer" />
+                  <img src="/images/Announcement.png" alt="Announcement" className="w-[25px] h-[25px]" referrerPolicy="no-referrer" />
                   <p className="text-[13px] text-[#D0D7DF] font-medium">There's a new announcement</p>
                 </div>
               </div>
@@ -290,11 +290,11 @@ export default function App() {
 
               {/* Quick Menu */}
               <div className="px-4 flex gap-[18px] overflow-x-auto hide-scrollbar py-2 mt-[8px]">
-                <QuickMenuIcon imageUrl="https://cdn.discordapp.com/attachments/481245079311482894/1488261922942881822/IMG_20260330_164122.png?ex=69cc236c&is=69cad1ec&hm=f35ef058a6f00c14e7773fe29d57b675a1cfdd20f5d8f768447408ba88cfc8b7&" label="Grid" />
-                <QuickMenuIcon imageUrl="https://cdn.discordapp.com/attachments/481245079311482894/1488264823492968468/IMG_20260330_164821.png?ex=69cc2620&is=69cad4a0&hm=c748c8ae96cc73f524fcedc3d08de1845922c3573de275795c7550f1fa520ab6&" label="Spin" />
-                <QuickMenuIcon imageUrl="https://cdn.discordapp.com/attachments/481245079311482894/1488264822574546995/IMG_20260330_164845.png?ex=69cc2620&is=69cad4a0&hm=c5cba628b139a6e4fe9ebe0eb99ce1db25ff4260cd64358e370934f457095490&" label="Proof Shot" />
-                <QuickMenuIcon imageUrl="https://cdn.discordapp.com/attachments/481245079311482894/1488264823052435628/IMG_20260330_164830.png?ex=69cc2620&is=69cad4a0&hm=8cdf5fc5270c0b063244ae70a48d82a90205548fa1213208680865775873bf6c&" label="Lenticular" />
-                <QuickMenuIcon imageUrl="https://cdn.discordapp.com/attachments/481245079311482894/1488264822251589885/IMG_20260330_164854.png?ex=69cc2620&is=69cad4a0&hm=f5f36123deecf7ac325e586042cf4432d56a71c465997960fffd0abb45749001&" label="Toploader" />
+                <QuickMenuIcon imageUrl="/images/Grid.png" label="Grid" />
+                <QuickMenuIcon imageUrl="/images/Spin.png" label="Spin" />
+                <QuickMenuIcon imageUrl="/images/Proof.png" label="Proof Shot" />
+                <QuickMenuIcon imageUrl="/images/Lenticular.png" label="Lenticular" />
+                <QuickMenuIcon imageUrl="/images/Toploader.png" label="Toploader" />
               </div>
 
               {/* Room Section */}
@@ -375,7 +375,7 @@ export default function App() {
                 {unifiedInventory.length === 0 ? (
                   <div className="col-span-3 flex flex-col items-center justify-center py-32">
                     <img 
-                      src="https://cdn.discordapp.com/attachments/481245079311482894/1489672671519309874/assets_images_image_empty_objekt.png?ex=69d14549&is=69cff3c9&hm=814123dcba353030ac8b129ad588ca68a76d782dbb48763c6b29268d96ec95ac&" 
+                      src="/images/EmptyObjekt.png" 
                       alt="Empty Collection" 
                       className="w-[90px] h-auto"
                       referrerPolicy="no-referrer"
@@ -953,7 +953,7 @@ function RoomCard({ title, subtitle, image }: { title: string, subtitle: string,
       <div className="aspect-square relative">
         <img src={image} alt={subtitle} className="w-full h-full object-cover" />
         <img 
-          src="https://cdn.discordapp.com/attachments/481245079311482894/1489449764616671272/IMG_20260402_232118.png?ex=69d075b0&is=69cf2430&hm=a6f4cde9d758cfc765940fc8a6e76225154664f4ee8db9fcc9b3b313b168b605&" 
+          src="/images/Membership.png" 
           alt="Icon" 
           className="absolute top-[12px] left-[12px] w-[28px] h-[28px] object-contain"
           referrerPolicy="no-referrer"

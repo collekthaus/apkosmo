@@ -1,0 +1,11 @@
+This directory is for static images. Please upload your images here with the following names:
+- Header.png
+- Announcement.png
+- Grid.png
+- Spin.png
+- Proof.png
+- Lenticular.png
+- Toploader.png
+- EmptyObjekt.png
+- Membership.png
+- PackImage.png

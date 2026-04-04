@@ -56,7 +56,7 @@ export const PACKS: Pack[] = [
     name: 'idntt',
     description: 'Spring26 Welcome',
     price: 17.99,
-    imageUrl: 'https://cdn.discordapp.com/attachments/481245079311482894/1489467610142998538/IMG_20260403_003212.png?ex=69d0864f&is=69cf34cf&hm=c1e19488a07f082e68f309068067464098906969696969696969696969696969&',
+    imageUrl: '/images/PackImage.png',
     possibleClasses: ['Welcome'],
     count: 1,
     season: 'Spring26',
