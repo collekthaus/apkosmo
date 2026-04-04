@@ -38,12 +38,14 @@ interface DebugValues {
   logoSize: number;
   backGroupY: number;
   backGroupX: number;
+  gapObjektButtons: number;
 }
 
 export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, onClose }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isFlashActive, setIsFlashActive] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
+  const isDragging = useRef(false);
   const [debugValues, setDebugValues] = useState<DebugValues>({
     headerTopPadding: 20,
     headerHorizontalPadding: 20,
@@ -72,6 +74,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
     logoSize: 40,
     backGroupY: 50,
     backGroupX: 50,
+    gapObjektButtons: 48,
   });
 
   // 3D Rotation State
@@ -92,12 +95,16 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
   }, [rotateY]);
 
   const handleObjektClick = () => {
+    if (isDragging.current) return;
     const current = rotateY.get();
-    const target = isFlipped ? Math.round(current / 180) * 180 : Math.round(current / 180) * 180 + 180;
+    const target = isFlipped 
+      ? Math.round(current / 180) * 180 + 180 
+      : Math.round(current / 180) * 180 - 180;
     x.set(target);
   };
 
   const handleDragEnd = (_: any, info: any) => {
+    setTimeout(() => { isDragging.current = false; }, 50);
     const current = rotateY.get();
     const velocity = info.velocity.x;
     
@@ -113,7 +120,11 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
   };
 
   const updateDebug = (key: keyof DebugValues, delta: number) => {
-    setDebugValues(prev => ({ ...prev, [key]: Number((prev[key] + delta).toFixed(3)) }));
+    let actualDelta = delta;
+    if (key.toLowerCase().includes('weight')) {
+      actualDelta = delta > 0 ? 100 : -100;
+    }
+    setDebugValues(prev => ({ ...prev, [key]: Number((prev[key] + actualDelta).toFixed(3)) }));
   };
 
   const borderValues = {
@@ -126,9 +137,9 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex flex-col"
+      className="fixed inset-0 z-[100] flex flex-col select-none"
       style={{
-        background: 'linear-gradient(0deg, #0B0C0E 0%, #555A60 100%)'
+        background: 'linear-gradient(180deg, #0B0C0E 0%, #555A60 100%)'
       }}
     >
       {/* Header */}
@@ -153,7 +164,10 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center gap-12">
+      <div 
+        className="flex-1 flex flex-col items-center justify-center"
+        style={{ gap: `${debugValues.gapObjektButtons}px` }}
+      >
         {/* Objekt Container */}
         <div 
           className="relative perspective-1000"
@@ -163,6 +177,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
           }}
         >
           <motion.div
+            onPanStart={() => { isDragging.current = true; }}
             onPan={(_, info) => {
               x.set(x.get() + info.delta.x * 0.5);
             }}
@@ -174,11 +189,11 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
               width: '100%',
               height: '100%',
             }}
-            className="relative cursor-grab active:cursor-grabbing"
+            className="relative cursor-grab active:cursor-grabbing touch-none"
           >
             {/* Front Face */}
             <div 
-              className="absolute inset-0 backface-hidden overflow-hidden"
+              className="absolute inset-0 backface-hidden overflow-hidden pointer-events-none"
               style={{ 
                 borderRadius: `${debugValues.objektCornerRadius}px`,
                 backgroundColor: '#171C20'
@@ -271,7 +286,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
 
             {/* Back Face */}
             <div 
-              className="absolute inset-0 backface-hidden overflow-hidden"
+              className="absolute inset-0 backface-hidden overflow-hidden pointer-events-none"
               style={{ 
                 borderRadius: `${debugValues.objektCornerRadius}px`,
                 backgroundColor: '#171C20',
@@ -281,7 +296,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
               <img 
                 src={objekt.imageBackUrl || objekt.imageUrl} 
                 alt={`${objekt.name} back`}
-                className="w-full h-full object-cover opacity-50"
+                className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
               
@@ -356,7 +371,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
               initial={{ opacity: 0, scale: 0.9, x: 20 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.9, x: 20 }}
-              className="absolute bottom-16 right-0 w-72 max-h-[70vh] overflow-y-auto bg-black/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 custom-scrollbar shadow-2xl"
+              className="absolute bottom-16 right-0 w-[258px] max-h-[calc(70vh-25px)] overflow-y-auto bg-black/20 border border-white/10 rounded-2xl p-4 custom-scrollbar shadow-2xl"
             >
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-white/50 uppercase tracking-wider">Debug Menu</h3>
@@ -374,6 +389,13 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
                       >
                         <Minus size={12} />
                       </button>
+                      <input 
+                        type="number"
+                        step="any"
+                        value={value}
+                        onChange={(e) => setDebugValues(prev => ({ ...prev, [key]: parseFloat(e.target.value) || 0 }))}
+                        className="w-16 h-7 bg-white/5 border border-white/10 rounded text-[10px] text-white text-center font-mono"
+                      />
                       <button 
                         onClick={() => updateDebug(key as keyof DebugValues, 1)}
                         className="flex-1 h-7 bg-white/5 hover:bg-white/10 rounded flex items-center justify-center text-white transition-colors"
