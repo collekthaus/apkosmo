@@ -84,7 +84,7 @@
 
 @font-face {
     font-family: 'DotMatrix';
-    src: url('/fonts/DotMatrixNormal.ttf') format('truetype');
+    src: url('/src/assets/fonts/DotMatrixNormal.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -92,7 +92,7 @@
 
 @font-face {
     font-family: 'Inter';
-    src: url('/fonts/Inter28pt-Bold.ttf') format('truetype');
+    src: url('/src/assets/fonts/Inter28pt-Bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
