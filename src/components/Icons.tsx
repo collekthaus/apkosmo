@@ -82,6 +82,24 @@ export const ProfileIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
+export const GridIcon = ({ active }: { active: boolean }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-[22px] h-[22px]" fill="none" stroke={active ? "#FBFBFD" : "#7C8992"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="3" width="14" height="14" rx="2" />
+    <path d="M7 21h12a2 2 0 0 0 2-2V7" />
+    <line x1="10" y1="7" x2="10" y2="13" />
+    <line x1="7" y1="10" x2="13" y2="10" />
+  </svg>
+);
+
+export const PlayIcon = ({ active }: { active: boolean }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-[22px] h-[22px]" fill="none" stroke={active ? "#FBFBFD" : "#7C8992"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 4l6 0l-3 5z" /> {/* Triangle */}
+    <path d="M14 4a2 2 0 0 1 4 0a2 2 0 0 1 4 0c0 2 -4 6 -4 6s-4 -4 -4 -6" /> {/* Heart simplified */}
+    <circle cx="7" cy="17" r="3" /> {/* Circle */}
+    <rect x="15" y="14" width="6" height="6" rx="1" /> {/* Square */}
+  </svg>
+);
+
 export const QRCodeIcon = ({ className = "" }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 53.12 53.12" className={className} fill="currentColor">
     <title>QR Code</title>

@@ -31,6 +31,7 @@ export interface Pack {
   possibleClasses: ObjektClass[];
   count: number;
   season?: string;
+  artist?: string;
   class?: string;
   range?: string;
   typeCount?: number;

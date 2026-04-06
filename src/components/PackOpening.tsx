@@ -8,10 +8,10 @@ import confetti from 'canvas-confetti';
 interface PackOpeningProps {
   pack: Pack;
   onClose: (newObjekts: Objekt[]) => void;
-  totalObjekts: number;
+  inventory: Objekt[];
 }
 
-export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose, totalObjekts }) => {
+export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose, inventory }) => {
   const [step, setStep] = useState<'closed' | 'opening' | 'revealed'>('closed');
   const [revealedObjekts, setRevealedObjekts] = useState<Objekt[]>([]);
 
@@ -20,14 +20,26 @@ export const PackOpening: React.FC<PackOpeningProps> = ({ pack, onClose, totalOb
     
     // Simulate gacha logic
     const newObjekts: Objekt[] = [];
-    let currentTotal = totalObjekts;
+    const currentCounts = inventory.reduce((acc, obj) => {
+      acc[obj.id] = (acc[obj.id] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
     for (let i = 0; i < pack.count; i++) {
-      const possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.Class as any));
+      let possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.Class as any));
+      if (pack.artist) {
+        possible = possible.filter(o => o.artist === pack.artist);
+      }
+      if (pack.season) {
+        possible = possible.filter(o => o.Season === pack.season);
+      }
       const random = possible[Math.floor(Math.random() * possible.length)];
-      currentTotal++;
+      
+      currentCounts[random.id] = (currentCounts[random.id] || 0) + 1;
+      
       newObjekts.push({
         ...random,
-        serialNumber: currentTotal,
+        serialNumber: currentCounts[random.id],
         obtainedAt: new Date().toISOString()
       });
     }

@@ -8,11 +8,12 @@ import { LogoIcon } from './Icons';
 interface DetailedObjektViewProps {
   objekt: Objekt;
   onClose: () => void;
+  showBorder?: boolean;
 }
 
-export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, onClose }) => {
+export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, onClose, showBorder = false }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isFlashActive, setIsFlashActive] = useState(false);
+  const [isFlashActive, setIsFlashActive] = useState(showBorder);
   const isDragging = useRef(false);
 
   // 3D Rotation State
@@ -137,7 +138,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
               />
               
               {/* Front Border */}
-              {!isFlashActive && (
+              {isFlashActive && (
                 <div 
                   className="absolute flex flex-col items-center justify-between pointer-events-none"
                   style={{ 
@@ -205,9 +206,10 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
                     <span style={{ 
                       fontSize: '16px', 
                       letterSpacing: '0px',
-                      fontFamily: "'DotMatrix', sans-serif"
+                      fontFamily: "'DotMatrix', sans-serif",
+                      transform: 'translate(0px, 2px)'
                     }}>
-                      #{String(objekt.serialNumber || 0).padStart(5, '0')}
+                      #{String(objekt.serialNumber || 1).padStart(5, '0')}
                     </span>
                   </div>
                 </div>
@@ -252,9 +254,10 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
                 <span style={{ 
                   fontSize: '16px', 
                   letterSpacing: '0px',
-                  fontFamily: "'DotMatrix', sans-serif"
+                  fontFamily: "'DotMatrix', sans-serif",
+                  transform: 'translate(0px, 2px)'
                 }}>
-                  #{String(objekt.serialNumber || 0).padStart(5, '0')}
+                  #{String(objekt.serialNumber || 1).padStart(5, '0')}
                 </span>
               </div>
             </div>

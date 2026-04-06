@@ -18,7 +18,10 @@ import {
   ChevronLeft,
   Heart,
   Check,
-  Pin
+  Pin,
+  RotateCw,
+  Settings,
+  X
 } from 'lucide-react';
 import { Objekt, Pack, UserStats } from './types';
 import { PACKS, OBJEKT_POOL } from './constants';
@@ -33,12 +36,15 @@ import {
   RekordIcon,
   CollectIcon,
   RoomIcon,
+  GridIcon,
+  PlayIcon,
   ProfileIcon
 } from './components/Icons';
 
 import { DetailedObjektView } from './components/DetailedObjektView';
+import { ArtistFilterModal } from './components/ArtistFilterModal';
 
-type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail';
+type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail' | 'grid' | 'play';
 
 const HERO_IMAGES = [
   {
@@ -75,6 +81,7 @@ const HERO_IMAGES = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [previousTab, setPreviousTab] = useState<Tab>('home');
   const [inventory, setInventory] = useState<Objekt[]>([]);
   const [stats, setStats] = useState<UserStats>({
     como: 1000,
@@ -86,16 +93,145 @@ export default function App() {
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
   const [selectedUnifiedObjektId, setSelectedUnifiedObjektId] = useState<string | null>(null);
   const [selectedObjektForDetail, setSelectedObjektForDetail] = useState<Objekt | null>(null);
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [selectedArtists, setSelectedArtists] = useState<string[]>([]);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedOnlineStatus, setSelectedOnlineStatus] = useState<string[]>([]);
+  const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
+  const [selectedSort, setSelectedSort] = useState<'Newest' | 'Oldest' | 'Lowest No.' | 'Highest No.'>('Newest');
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [isArtistFilterOpen, setIsArtistFilterOpen] = useState(false);
+  const [initialFilterTab, setInitialFilterTab] = useState<'Artist' | 'Season' | 'Type' | 'On/Offline' | 'Other'>('Artist');
+  
+  // Debug states
+  const [footerPart1Offset, setFooterPart1Offset] = useState(0);
+  const [footerPart2Padding, setFooterPart2Padding] = useState(16);
+  const [isDebugOpen, setIsDebugOpen] = useState(false);
+
+  const toggleFilter = (filter: string) => {
+    if (filter === 'Artist' || filter === 'Type' || filter === 'On/Offline' || filter === 'Season' || filter === 'Other') {
+      setInitialFilterTab(filter as any);
+      setIsArtistFilterOpen(true);
+      return;
+    }
+    setActiveFilters(prev => 
+      prev.includes(filter) 
+        ? prev.filter(f => f !== filter) 
+        : [...prev, filter]
+    );
+  };
+
+  const resetFilters = () => {
+    setActiveFilters([]);
+    setSelectedArtists([]);
+    setSelectedTypes([]);
+    setSelectedOnlineStatus([]);
+    setSelectedSeason(null);
+  };
 
   const unifiedInventory = inventory.reduce((acc, objekt) => {
+    // Filter by artist if selected
+    if (selectedArtists.length > 0 && !selectedArtists.includes(objekt.artist)) {
+      return acc;
+    }
+
+    // Filter by season if selected
+    if (selectedSeason && objekt.Season !== selectedSeason) {
+      return acc;
+    }
+
+    // Filter by class (Type) if selected
+    if (selectedTypes.length > 0 && !selectedTypes.includes(objekt.Class)) {
+      return acc;
+    }
+
+    // Filter by On/Offline if selected
+    if (selectedOnlineStatus.length > 0) {
+      const isZOnline = selectedOnlineStatus.includes('Z Online');
+      const isAOffline = selectedOnlineStatus.includes('A Offline');
+      
+      const hasZ = objekt.Type.includes('Z');
+      const hasA = objekt.Type.includes('A');
+
+      if (isZOnline && isAOffline) {
+        if (!hasZ && !hasA) return acc;
+      } else if (isZOnline) {
+        if (!hasZ) return acc;
+      } else if (isAOffline) {
+        if (!hasA) return acc;
+      }
+    }
+
     const existing = acc.find(o => o.id === objekt.id);
     if (existing) {
       existing.count = (existing.count || 1) + 1;
+      // Keep the best (lowest) serial number
+      if (objekt.serialNumber && (!existing.serialNumber || objekt.serialNumber < existing.serialNumber)) {
+        existing.serialNumber = objekt.serialNumber;
+      }
+      // Keep the earliest obtainedAt for 'Oldest' sort
+      if (objekt.obtainedAt && (!existing.obtainedAt || new Date(objekt.obtainedAt) < new Date(existing.obtainedAt))) {
+        // We'll use a temporary property or just use obtainedAt for the earliest one
+        // Actually, let's store both to be safe
+        (existing as any).firstObtainedAt = (existing as any).firstObtainedAt || existing.obtainedAt;
+        if (new Date(objekt.obtainedAt) < new Date((existing as any).firstObtainedAt)) {
+          (existing as any).firstObtainedAt = objekt.obtainedAt;
+        }
+      }
+      // Keep the latest obtainedAt for 'Newest' sort
+      if (objekt.obtainedAt && (!existing.obtainedAt || new Date(objekt.obtainedAt) > new Date(existing.obtainedAt))) {
+        (existing as any).lastObtainedAt = (existing as any).lastObtainedAt || existing.obtainedAt;
+        if (new Date(objekt.obtainedAt) > new Date((existing as any).lastObtainedAt)) {
+          (existing as any).lastObtainedAt = objekt.obtainedAt;
+        }
+      }
     } else {
-      acc.push({ ...objekt, count: 1 });
+      acc.push({ 
+        ...objekt, 
+        count: 1,
+        // Initialize first/last obtainedAt
+        firstObtainedAt: objekt.obtainedAt,
+        lastObtainedAt: objekt.obtainedAt
+      } as any);
     }
     return acc;
-  }, [] as (Objekt & { count?: number })[]);
+  }, [] as (Objekt & { count?: number; firstObtainedAt?: string; lastObtainedAt?: string })[]);
+
+  // Sort unifiedInventory
+  const sortedInventory = [...unifiedInventory].sort((a, b) => {
+    let result = 0;
+    switch (selectedSort) {
+      case 'Newest':
+        result = new Date(b.lastObtainedAt || b.obtainedAt || 0).getTime() - new Date(a.lastObtainedAt || a.obtainedAt || 0).getTime();
+        // Tie-breaker: Lowest serial number
+        if (result === 0) result = (a.serialNumber || 0) - (b.serialNumber || 0);
+        // Secondary tie-breaker: ID
+        if (result === 0) result = a.id.localeCompare(b.id);
+        break;
+      case 'Oldest':
+        result = new Date(a.firstObtainedAt || a.obtainedAt || 0).getTime() - new Date(b.firstObtainedAt || b.obtainedAt || 0).getTime();
+        // Tie-breaker: Lowest serial number
+        if (result === 0) result = (a.serialNumber || 0) - (b.serialNumber || 0);
+        // Secondary tie-breaker: ID
+        if (result === 0) result = a.id.localeCompare(b.id);
+        break;
+      case 'Lowest No.':
+        result = (a.serialNumber || Infinity) - (b.serialNumber || Infinity);
+        // Tie-breaker: Newest obtained
+        if (result === 0) result = new Date(b.lastObtainedAt || b.obtainedAt || 0).getTime() - new Date(a.lastObtainedAt || a.obtainedAt || 0).getTime();
+        // Secondary tie-breaker: ID
+        if (result === 0) result = a.id.localeCompare(b.id);
+        break;
+      case 'Highest No.':
+        result = (b.serialNumber || 0) - (a.serialNumber || 0);
+        // Tie-breaker: Newest obtained
+        if (result === 0) result = new Date(b.lastObtainedAt || b.obtainedAt || 0).getTime() - new Date(a.lastObtainedAt || a.obtainedAt || 0).getTime();
+        // Secondary tie-breaker: ID
+        if (result === 0) result = a.id.localeCompare(b.id);
+        break;
+    }
+    return result;
+  });
 
   // Load from local storage
   useEffect(() => {
@@ -112,7 +248,7 @@ export default function App() {
     }
     
     if (initialInventory.length === 0) {
-      initialInventory = [OBJEKT_POOL[0], OBJEKT_POOL[2]];
+      initialInventory = [];
     }
     
     setInventory(initialInventory);
@@ -152,15 +288,27 @@ export default function App() {
 
   const generateObjektsFromPack = (pack: Pack, quantity: number): Objekt[] => {
     const newObjekts: Objekt[] = [];
-    let currentTotal = stats.totalObjekts;
+    const currentCounts = inventory.reduce((acc, obj) => {
+      acc[obj.id] = (acc[obj.id] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
     for (let q = 0; q < quantity; q++) {
       for (let i = 0; i < pack.count; i++) {
-        const possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.Class as any));
+        let possible = OBJEKT_POOL.filter(o => pack.possibleClasses.includes(o.Class as any));
+        if (pack.artist) {
+          possible = possible.filter(o => o.artist === pack.artist);
+        }
+        if (pack.season) {
+          possible = possible.filter(o => o.Season === pack.season);
+        }
         const random = possible[Math.floor(Math.random() * possible.length)];
-        currentTotal++;
+        
+        currentCounts[random.id] = (currentCounts[random.id] || 0) + 1;
+        
         newObjekts.push({
           ...random,
-          serialNumber: currentTotal,
+          serialNumber: currentCounts[random.id],
           obtainedAt: new Date().toISOString()
         });
       }
@@ -335,75 +483,217 @@ export default function App() {
             </motion.div>
           )}
 
-          {activeTab === 'collect' && (
-            <motion.div
-              key="collect"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {/* Filters */}
-              <div className="px-4 py-4 flex items-center gap-[10px] overflow-x-auto hide-scrollbar">
-                <button className="h-[30px] px-3 bg-[#171C20] rounded-[12px] border-[1.3px] border-[#232A30] text-[13px] font-medium text-[#ADB7C0] whitespace-nowrap">
-                  Objekt number
-                </button>
-                
-                <div className="w-[1.5px] h-[22px] bg-[#171C20] flex-shrink-0" />
+          {(activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') && (
+            <AnimatePresence mode="wait">
+                {activeTab === 'collect' && (
+                  <motion.div
+                    key="collect"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    {/* Filters */}
+                    <div className="px-4 py-4 flex items-center gap-[10px] overflow-x-auto hide-scrollbar">
+                      {activeFilters.length > 0 && (
+                        <button 
+                          onClick={resetFilters}
+                          className="flex-shrink-0 bg-[#171C20] rounded-[10px] border-[1.3px] border-[#232A30] flex items-center justify-center"
+                          style={{ width: '30px', height: '30px' }}
+                        >
+                          <RotateCw size={16} className="text-[#ADB7C0]" />
+                        </button>
+                      )}
 
-                <FilterDropdown label="Artist" />
-                <FilterDropdown label="Season" />
-                <FilterDropdown label="Type" />
-                <button className="h-[30px] px-3 bg-[#171C20] rounded-[12px] border-[1.3px] border-[#232A30] text-[13px] font-medium text-[#ADB7C0] whitespace-nowrap flex items-center gap-1">
-                  On/Offline <ChevronDown size={14} />
-                </button>
-                <button className="h-[30px] px-3 bg-[#171C20] rounded-[12px] border-[1.3px] border-[#232A30] text-[13px] font-medium text-[#ADB7C0] whitespace-nowrap flex items-center gap-1">
-                  Other <ChevronDown size={14} />
-                </button>
-              </div>
+                      <button 
+                        onClick={() => toggleFilter('Objekt number')}
+                        className={cn(
+                          "h-[30px] px-3 rounded-[12px] border-[1.3px] text-[13px] font-medium whitespace-nowrap",
+                          activeFilters.includes('Objekt number')
+                            ? "bg-[#FAFAFA] border-[#232A30] text-[#232A30]"
+                            : "bg-[#171C20] border-[#232A30] text-[#ADB7C0]"
+                        )}
+                      >
+                        Objekt number
+                      </button>
+                      
+                      <div className="w-[1.5px] h-[22px] bg-[#171C20] flex-shrink-0" />
 
-              {/* Count & Sort */}
-              <div className="px-4 py-2 flex justify-between items-center text-[13px] font-medium text-[#D2D7DD]">
-                <span>{inventory.length} types</span>
-                <div className="flex items-center gap-1">
-                  <span>Newest</span>
-                  <ChevronDown size={14} />
-                </div>
-              </div>
+                      <FilterDropdown 
+                        label={
+                          selectedArtists.length === 0 
+                            ? "Artist" 
+                            : selectedArtists.length === 1 
+                              ? selectedArtists[0] 
+                              : `${selectedArtists[0]} +${selectedArtists.length - 1}`
+                        } 
+                        active={activeFilters.includes('Artist')} 
+                        onClick={() => toggleFilter('Artist')} 
+                        chevronClassName={activeFilters.includes('Artist') ? "text-[#ADB7C0]" : ""}
+                      />
+                      <FilterDropdown 
+                        label={selectedSeason || "Season"} 
+                        active={activeFilters.includes('Season')} 
+                        onClick={() => toggleFilter('Season')} 
+                        chevronClassName={activeFilters.includes('Season') ? "text-[#ADB7C0]" : ""}
+                      />
+                      <FilterDropdown 
+                        label={
+                          selectedTypes.length === 0 
+                            ? "Type" 
+                            : selectedTypes.length === 1 
+                              ? selectedTypes[0] 
+                              : `${selectedTypes[0]} +${selectedTypes.length - 1}`
+                        } 
+                        active={activeFilters.includes('Type')} 
+                        onClick={() => toggleFilter('Type')} 
+                        chevronClassName={activeFilters.includes('Type') ? "text-[#ADB7C0]" : ""}
+                      />
+                      
+                       <FilterDropdown 
+                        label={
+                          selectedOnlineStatus.length === 0 
+                            ? "On/Offline" 
+                            : selectedOnlineStatus.length === 1 
+                              ? selectedOnlineStatus[0] 
+                              : `${selectedOnlineStatus[0]} +${selectedOnlineStatus.length - 1}`
+                        } 
+                        active={activeFilters.includes('On/Offline')} 
+                        onClick={() => toggleFilter('On/Offline')} 
+                        chevronClassName={activeFilters.includes('On/Offline') ? "text-[#ADB7C0]" : ""}
+                      />
+                      
+                      <FilterDropdown 
+                        label="Other" 
+                        active={activeFilters.includes('Other')} 
+                        onClick={() => toggleFilter('Other')} 
+                        chevronClassName={activeFilters.includes('Other') ? "text-[#ADB7C0]" : ""}
+                      />
+                    </div>
 
-              {/* Grid */}
-              <div className="px-4 grid grid-cols-3 gap-2 mt-2">
-                {unifiedInventory.length === 0 ? (
-                  <div className="col-span-3 flex flex-col items-center justify-center py-32">
-                    <img 
-                      src="/images/EmptyObjekt.png" 
-                      alt="Empty Collection" 
-                      className="w-[90px] h-auto"
-                      referrerPolicy="no-referrer"
-                    />
-                    <p className="mt-[20px] text-[12px] font-normal text-[#ADB7C0]">
-                      You don't have any Objekts yet
-                    </p>
-                  </div>
-                ) : (
-                  unifiedInventory.map((objekt, idx) => (
-                    <ObjektCard 
-                      key={`${objekt.id}-${idx}`} 
-                      objekt={objekt} 
-                      count={objekt.count}
-                      className="rounded-[7px]"
-                      onClick={() => {
-                        if (objekt.count && objekt.count > 1) {
-                          setSelectedUnifiedObjektId(objekt.id);
-                        } else {
-                          setSelectedObjektForDetail(objekt);
-                        }
-                      }}
-                    />
-                  ))
+                    {/* Count & Sort */}
+                    <div className="px-4 py-2 flex justify-between items-center text-[13px] font-medium text-[#D2D7DD]">
+                      <div className="flex items-center gap-2">
+                        <span>{sortedInventory.length} types</span>
+                        <button 
+                          onClick={() => setIsDebugOpen(true)}
+                          className="w-5 h-5 rounded-full bg-[#171C20] border border-[#2A3338] flex items-center justify-center text-[#7C8992]"
+                        >
+                          <Settings size={12} />
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <button 
+                          onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+                          className="flex items-center gap-1"
+                        >
+                          <span>{selectedSort}</span>
+                          <motion.div
+                            animate={{ rotate: isSortDropdownOpen ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <ChevronDown size={14} />
+                          </motion.div>
+                        </button>
+
+                        <AnimatePresence>
+                          {isSortDropdownOpen && (
+                            <>
+                              {/* Backdrop to close dropdown */}
+                              <div 
+                                className="fixed inset-0 z-[80]" 
+                                onClick={() => setIsSortDropdownOpen(false)} 
+                              />
+                              <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="absolute right-0 top-full mt-2 w-[150px] bg-[#171C20] rounded-[12px] shadow-2xl z-[90] overflow-hidden py-2"
+                              >
+                                {(['Newest', 'Oldest', 'Lowest No.', 'Highest No.'] as const).map((option) => (
+                                  <button
+                                    key={option}
+                                    onClick={() => {
+                                      setSelectedSort(option);
+                                      setIsSortDropdownOpen(false);
+                                    }}
+                                    className={cn(
+                                      "w-full px-4 py-[13.5px] text-center text-[13px] font-medium transition-colors",
+                                      selectedSort === option ? "text-[#FBFBFD]" : "text-[#ACB9C1]"
+                                    )}
+                                  >
+                                    {option}
+                                  </button>
+                                ))}
+                              </motion.div>
+                            </>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+
+                    {/* Grid */}
+                    <div className="px-4 grid grid-cols-3 gap-2 mt-2">
+                      {sortedInventory.length === 0 ? (
+                        <div className="col-span-3 flex flex-col items-center justify-center py-32">
+                          <img 
+                            src="/images/EmptyObjekt.png" 
+                            alt="Empty Collection" 
+                            className="w-[90px] h-auto"
+                            referrerPolicy="no-referrer"
+                          />
+                          <p className="mt-[20px] text-[12px] font-normal text-[#ADB7C0]">
+                            You don't have any Objekts yet
+                          </p>
+                        </div>
+                      ) : (
+                        sortedInventory.map((objekt, idx) => (
+                          <ObjektCard 
+                            key={`${objekt.id}-${idx}`} 
+                            objekt={objekt} 
+                            count={objekt.count}
+                            className="rounded-[7px]"
+                            showBorder={activeFilters.includes('Objekt number')}
+                            onClick={() => {
+                              if (objekt.count && objekt.count > 1) {
+                                setSelectedUnifiedObjektId(objekt.id);
+                              } else {
+                                setSelectedObjektForDetail(objekt);
+                              }
+                            }}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
                 )}
-              </div>
-            </motion.div>
-          )}
+
+                {activeTab === 'grid' && (
+                  <motion.div
+                    key="grid"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col items-center justify-center py-32"
+                  >
+                    <Grid3X3 size={48} className="text-[#2A3338] mb-4" />
+                    <p className="text-[14px] font-medium text-[#ACB9C1]">Grid Page coming soon</p>
+                  </motion.div>
+                )}
+
+                {activeTab === 'play' && (
+                  <motion.div
+                    key="play"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="flex flex-col items-center justify-center py-32"
+                  >
+                    <Heart size={48} className="text-[#2A3338] mb-4" />
+                    <p className="text-[14px] font-medium text-[#ACB9C1]">Play Page coming soon</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            )}
 
           {/* Unified Detail View */}
           {selectedUnifiedObjektId && (
@@ -435,8 +725,9 @@ export default function App() {
                       <ObjektCard 
                         key={`${objekt.id}-${idx}`} 
                         objekt={objekt} 
-                        serialTag={`#${String(objekt.serialNumber || 0).padStart(5, '0')}`}
+                        serialTag={`#${String(objekt.serialNumber || 1).padStart(5, '0')}`}
                         showDetails={false}
+                        showBorder={activeFilters.includes('Objekt number')}
                         className="rounded-[7px]"
                         onClick={() => setSelectedObjektForDetail(objekt)}
                       />
@@ -743,36 +1034,103 @@ export default function App() {
       {activeTab !== 'shop' && activeTab !== 'pack-detail' && (
         <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#171C20] border-t-[1.3px] border-[#2A3338] px-4 pt-3 pb-[10px]">
           <div className="max-w-md mx-auto flex justify-between items-center">
-            <NavButton 
-              active={activeTab === 'home'} 
-              onClick={() => setActiveTab('home')}
-              icon={<HomeIcon active={activeTab === 'home'} />}
-              label="Home"
-            />
-            <NavButton 
-              active={activeTab === 'rekord'} 
-              onClick={() => setActiveTab('rekord')}
-              icon={<RekordIcon active={activeTab === 'rekord'} />}
-              label="Rekord"
-            />
-            <NavButton 
-              active={activeTab === 'collect'} 
-              onClick={() => setActiveTab('collect')}
-              icon={<CollectIcon active={activeTab === 'collect'} />}
-              label="Collect"
-            />
-            <NavButton 
-              active={activeTab === 'room'} 
-              onClick={() => setActiveTab('room')}
-              icon={<RoomIcon active={activeTab === 'room'} />}
-              label="Room"
-            />
-            <NavButton 
-              active={activeTab === 'profile'} 
-              onClick={() => setActiveTab('profile')}
-              icon={<ProfileIcon active={activeTab === 'profile'} />}
-              label="Profile"
-            />
+            {(activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? (
+              <div className="flex w-full items-center">
+                {/* Previous Page Part */}
+                <div 
+                  className="w-[100px] pr-4 border-r-[1.3px] border-[#2A3338] flex justify-center"
+                  style={{ transform: `translateX(${footerPart1Offset}px)` }}
+                >
+                  <NavButton 
+                    active={false} 
+                    onClick={() => setActiveTab(previousTab)}
+                    icon={
+                      previousTab === 'home' ? <HomeIcon active={false} /> :
+                      previousTab === 'rekord' ? <RekordIcon active={false} /> :
+                      previousTab === 'room' ? <RoomIcon active={false} /> :
+                      previousTab === 'profile' ? <ProfileIcon active={false} /> :
+                      <HomeIcon active={false} />
+                    }
+                    label={previousTab.charAt(0).toUpperCase() + previousTab.slice(1)}
+                  />
+                </div>
+                
+                {/* Collect Sub-menu Part */}
+                <div 
+                  className="flex-1 flex justify-around"
+                  style={{ paddingLeft: `${footerPart2Padding}px`, paddingRight: `${footerPart2Padding}px` }}
+                >
+                  <NavButton 
+                    active={activeTab === 'collect'} 
+                    onClick={() => setActiveTab('collect')}
+                    layoutId="collect"
+                    icon={<CollectIcon active={activeTab === 'collect'} />}
+                    label="Collect"
+                  />
+                  <NavButton 
+                    active={activeTab === 'grid'} 
+                    onClick={() => setActiveTab('grid')}
+                    icon={<GridIcon active={activeTab === 'grid'} />}
+                    label="Grid"
+                  />
+                  <NavButton 
+                    active={activeTab === 'play'} 
+                    onClick={() => setActiveTab('play')}
+                    icon={<PlayIcon active={activeTab === 'play'} />}
+                    label="Play"
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                <NavButton 
+                  active={activeTab === 'home'} 
+                  onClick={() => {
+                    setPreviousTab(activeTab);
+                    setActiveTab('home');
+                  }}
+                  icon={<HomeIcon active={activeTab === 'home'} />}
+                  label="Home"
+                />
+                <NavButton 
+                  active={activeTab === 'rekord'} 
+                  onClick={() => {
+                    setPreviousTab(activeTab);
+                    setActiveTab('rekord');
+                  }}
+                  icon={<RekordIcon active={activeTab === 'rekord'} />}
+                  label="Rekord"
+                />
+                <NavButton 
+                  active={activeTab === 'collect'} 
+                  onClick={() => {
+                    setPreviousTab(activeTab);
+                    setActiveTab('collect');
+                  }}
+                  layoutId="collect"
+                  icon={<CollectIcon active={activeTab === 'collect'} />}
+                  label="Collect"
+                />
+                <NavButton 
+                  active={activeTab === 'room'} 
+                  onClick={() => {
+                    setPreviousTab(activeTab);
+                    setActiveTab('room');
+                  }}
+                  icon={<RoomIcon active={activeTab === 'room'} />}
+                  label="Room"
+                />
+                <NavButton 
+                  active={activeTab === 'profile'} 
+                  onClick={() => {
+                    setPreviousTab(activeTab);
+                    setActiveTab('profile');
+                  }}
+                  icon={<ProfileIcon active={activeTab === 'profile'} />}
+                  label="Profile"
+                />
+              </>
+            )}
           </div>
         </nav>
       )}
@@ -783,10 +1141,56 @@ export default function App() {
           <PackOpening 
             pack={openingPack} 
             onClose={handlePackFinish} 
-            totalObjekts={stats.totalObjekts}
+            inventory={inventory}
           />
         )}
       </AnimatePresence>
+
+      {/* Artist Filter Modal */}
+      <ArtistFilterModal 
+        isOpen={isArtistFilterOpen}
+        onClose={() => setIsArtistFilterOpen(false)}
+        selectedArtists={selectedArtists}
+        selectedTypes={selectedTypes}
+        selectedOnlineStatus={selectedOnlineStatus}
+        selectedSeason={selectedSeason}
+        initialTab={initialFilterTab}
+        onApply={(artists, types, onlineStatus, season) => {
+          setSelectedArtists(artists);
+          setSelectedTypes(types);
+          setSelectedOnlineStatus(onlineStatus);
+          setSelectedSeason(season);
+          if (artists.length > 0) {
+            if (!activeFilters.includes('Artist')) {
+              setActiveFilters(prev => [...prev, 'Artist']);
+            }
+          } else {
+            setActiveFilters(prev => prev.filter(f => f !== 'Artist'));
+          }
+          if (types.length > 0) {
+            if (!activeFilters.includes('Type')) {
+              setActiveFilters(prev => [...prev, 'Type']);
+            }
+          } else {
+            setActiveFilters(prev => prev.filter(f => f !== 'Type'));
+          }
+          if (onlineStatus.length > 0) {
+            if (!activeFilters.includes('On/Offline')) {
+              setActiveFilters(prev => [...prev, 'On/Offline']);
+            }
+          } else {
+            setActiveFilters(prev => prev.filter(f => f !== 'On/Offline'));
+          }
+          if (season) {
+            if (!activeFilters.includes('Season')) {
+              setActiveFilters(prev => [...prev, 'Season']);
+            }
+          } else {
+            setActiveFilters(prev => prev.filter(f => f !== 'Season'));
+          }
+        }}
+      />
+
 
       {/* Detailed Objekt View */}
       <AnimatePresence>
@@ -794,7 +1198,59 @@ export default function App() {
           <DetailedObjektView 
             objekt={selectedObjektForDetail} 
             onClose={() => setSelectedObjektForDetail(null)} 
+            showBorder={activeFilters.includes('Objekt number')}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Debug Menu */}
+      <AnimatePresence>
+        {isDebugOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -20, x: '-50%' }}
+            className="fixed top-4 left-1/2 z-[100] bg-[#171C20] border border-[#2A3338] rounded-xl p-4 shadow-2xl w-[280px]"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-white font-bold text-sm">Debug Menu</h3>
+              <button onClick={() => setIsDebugOpen(false)} className="text-[#7C8992] hover:text-white">
+                <X size={18} />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Part 1 Offset (px)</label>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setFooterPart1Offset(footerPart1Offset - 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <input 
+                    type="number" 
+                    step="0.1"
+                    value={footerPart1Offset} 
+                    onChange={(e) => setFooterPart1Offset(parseFloat(e.target.value) || 0)}
+                    className="flex-1 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                  />
+                  <button onClick={() => setFooterPart1Offset(footerPart1Offset + 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Part 2 Padding (px)</label>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setFooterPart2Padding(footerPart2Padding - 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <input 
+                    type="number" 
+                    step="0.1"
+                    value={footerPart2Padding} 
+                    onChange={(e) => setFooterPart2Padding(parseFloat(e.target.value) || 0)}
+                    className="flex-1 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                  />
+                  <button onClick={() => setFooterPart2Padding(footerPart2Padding + 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
@@ -802,7 +1258,7 @@ export default function App() {
 }
 
 
-function NavButton({ active, onClick, icon, label }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string }) {
+function NavButton({ active, onClick, icon, label, layoutId }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string, layoutId?: string }) {
   return (
     <button 
       onClick={onClick}
@@ -811,7 +1267,20 @@ function NavButton({ active, onClick, icon, label }: { active: boolean, onClick:
         active ? "text-[#FBFBFD]" : "text-[#7C8992]"
       )}
     >
-      {icon}
+      <div className="relative h-[24px] w-[24px] flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={layoutId ? layoutId : label}
+            layoutId={layoutId}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {icon}
+          </motion.div>
+        </AnimatePresence>
+      </div>
       <span className={cn(
         "text-[12px] tracking-tight",
         active ? "font-semibold" : "font-normal"
@@ -963,10 +1432,18 @@ function RoomCard({ title, subtitle, image }: { title: string, subtitle: string,
   );
 }
 
-function FilterDropdown({ label }: { label: string }) {
+function FilterDropdown({ label, active, onClick, chevronClassName }: { label: string; active?: boolean; onClick?: () => void; chevronClassName?: string }) {
   return (
-    <button className="h-[30px] px-3 bg-[#171C20] rounded-[12px] border-[1.3px] border-[#232A30] text-[13px] font-medium text-[#ADB7C0] whitespace-nowrap flex items-center gap-1">
-      {label} <ChevronDown size={14} />
+    <button 
+      onClick={onClick}
+      className={cn(
+        "h-[30px] px-3 rounded-[12px] border-[1.3px] text-[13px] font-medium whitespace-nowrap flex items-center gap-1",
+        active
+          ? "bg-[#FAFAFA] border-[#232A30] text-[#232A30]"
+          : "bg-[#171C20] border-[#232A30] text-[#ADB7C0]"
+      )}
+    >
+      {label} <ChevronDown size={14} className={chevronClassName} />
     </button>
   );
 }

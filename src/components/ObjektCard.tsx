@@ -9,6 +9,7 @@ interface ObjektCardProps {
   className?: string;
   onClick?: () => void;
   showDetails?: boolean;
+  showBorder?: boolean;
   count?: number;
   serialTag?: string;
 }
@@ -18,6 +19,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
   className, 
   onClick,
   showDetails = true,
+  showBorder = false,
   count,
   serialTag
 }) => {
@@ -143,7 +145,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
       )}
       
       {/* Sidebar Border */}
-      {showDetails && (
+      {showDetails && showBorder && (
         <div 
           className="absolute flex flex-col items-center justify-between pointer-events-none"
           style={{ 
