@@ -83,20 +83,29 @@ export const ProfileIcon = ({ active }: { active: boolean }) => (
 );
 
 export const GridIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-[22px] h-[22px]" fill="none" stroke={active ? "#FBFBFD" : "#7C8992"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="3" width="14" height="14" rx="2" />
-    <path d="M7 21h12a2 2 0 0 0 2-2V7" />
-    <line x1="10" y1="7" x2="10" y2="13" />
-    <line x1="7" y1="10" x2="13" y2="10" />
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52.52 52.86" className="w-[22px] h-[22px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+    <title>Grid</title>
+    <g id="Camada_2" data-name="Camada 2">
+      <g id="Camada_1-2" data-name="Camada 1">
+        <path d="M47.36,52.86H18.71a5.16,5.16,0,0,1-5.16-5.16V19.05a5.16,5.16,0,0,1,5.16-5.16H47.36a5.16,5.16,0,0,1,5.16,5.16V47.7A5.16,5.16,0,0,1,47.36,52.86Zm-29.62-3.6H48.33a.58.58,0,0,0,.59-.59V18.08a.59.59,0,0,0-.59-.59H17.74a.6.6,0,0,0-.59.59V48.67A.59.59,0,0,0,17.74,49.26Z"/>
+        <path d="M42,31.35h-7v-7a2,2,0,0,0-4.06,0v7h-7a2,2,0,1,0,0,4h7v7a2,2,0,0,0,4.06,0v-7h7a2,2,0,1,0,0-4Z"/>
+        <path d="M3.47,8.65A.6.6,0,0,1,4,8L34.23,3.47a.59.59,0,0,1,.66.5l.42,2.82a1.8,1.8,0,0,0,2.11,1.5h0a1.8,1.8,0,0,0,1.45-2L38.6,4.4A5.16,5.16,0,0,0,32.73.06L4.4,4.28A5.16,5.16,0,0,0,.06,10.14l4,27.08a1.88,1.88,0,0,0,1.76,1.63,1.81,1.81,0,0,0,1.82-2.07Z"/>
+      </g>
+    </g>
   </svg>
 );
 
 export const PlayIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-[22px] h-[22px]" fill="none" stroke={active ? "#FBFBFD" : "#7C8992"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M4 4l6 0l-3 5z" /> {/* Triangle */}
-    <path d="M14 4a2 2 0 0 1 4 0a2 2 0 0 1 4 0c0 2 -4 6 -4 6s-4 -4 -4 -6" /> {/* Heart simplified */}
-    <circle cx="7" cy="17" r="3" /> {/* Circle */}
-    <rect x="15" y="14" width="6" height="6" rx="1" /> {/* Square */}
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55.17 52.3" className="w-[22px] h-[22px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+    <title>Play</title>
+    <g id="Camada_2" data-name="Camada 2">
+      <g id="Camada_1-2" data-name="Camada 1">
+        <path d="M50,29.19H32.21a2.68,2.68,0,0,0-2.68,2.68V49.62a2.68,2.68,0,0,0,2.68,2.68H50a2.68,2.68,0,0,0,2.68-2.68V31.87A2.68,2.68,0,0,0,50,29.19ZM34.13,47.7V33.79H48V47.7Z"/>
+        <path d="M12.56,29.32A11.43,11.43,0,1,0,24,40.75,11.45,11.45,0,0,0,12.56,29.32Zm0,18.25a6.83,6.83,0,1,1,6.83-6.82A6.83,6.83,0,0,1,12.56,47.57Z"/>
+        <path d="M13.84,1.64a1.47,1.47,0,0,0-2.56,0L.19,21.27a1.47,1.47,0,0,0,1.28,2.19H23.64a1.48,1.48,0,0,0,1.29-2.19Zm-7,17.22L12.56,8.73l5.72,10.13Z"/>
+        <path d="M52.92,2.25A7.71,7.71,0,0,0,42,2.25L41.31,3a.34.34,0,0,1-.27.12A.37.37,0,0,1,40.77,3l-.68-.68A7.7,7.7,0,0,0,29.2,13.17L40.07,24a1.39,1.39,0,0,0,2,0l7-7,2.55-2.54,1.33-1.34a7.71,7.71,0,0,0,0-10.89ZM49.67,9.89l-8.35,8.35a.41.41,0,0,1-.28.11.4.4,0,0,1-.27-.11l-4.46-4.47L32.46,9.92a3.1,3.1,0,0,1,4.38-4.39l3.23,3.23a1.36,1.36,0,0,0,2,0L44,6.84,45.28,5.5a3.1,3.1,0,0,1,4.39,4.39Z"/>
+      </g>
+    </g>
   </svg>
 );
 

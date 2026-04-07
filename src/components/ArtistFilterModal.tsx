@@ -13,6 +13,7 @@ interface ArtistFilterModalProps {
   selectedSeason: string | null;
   onApply: (artists: string[], types: string[], onlineStatus: string[], season: string | null) => void;
   initialTab?: 'Artist' | 'Season' | 'Type' | 'On/Offline' | 'Other';
+  height?: number;
 }
 
 const OBJEKT_CLASSES = ['Basic', 'Event', 'Motion', 'Special', 'Unit', 'ETC'];
@@ -53,7 +54,8 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
   selectedOnlineStatus: initialOnlineStatus,
   selectedSeason: initialSeason,
   onApply,
-  initialTab = 'Artist'
+  initialTab = 'Artist',
+  height = 78
 }) => {
   const [tempArtists, setTempArtists] = useState<string[]>(initialArtists);
   const [tempTypes, setTempTypes] = useState<string[]>(initialTypes);
@@ -155,7 +157,7 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed bottom-0 left-0 right-0 z-[70] bg-[#232A30] rounded-t-[24px] flex flex-col"
-            style={{ height: '78vh' }}
+            style={{ height: `${height}vh` }}
           >
             {/* Top Holder */}
             <div className="flex justify-center py-3">

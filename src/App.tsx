@@ -106,6 +106,7 @@ export default function App() {
   // Debug states
   const [footerPart1Offset, setFooterPart1Offset] = useState(0);
   const [footerPart2Padding, setFooterPart2Padding] = useState(16);
+  const [filterModalHeight, setFilterModalHeight] = useState(78);
   const [isDebugOpen, setIsDebugOpen] = useState(false);
 
   const toggleFilter = (filter: string) => {
@@ -673,10 +674,59 @@ export default function App() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex flex-col items-center justify-center py-32"
+                    className="flex flex-col min-h-screen pt-4 px-4 pb-32"
                   >
-                    <Grid3X3 size={48} className="text-[#2A3338] mb-4" />
-                    <p className="text-[14px] font-medium text-[#ACB9C1]">Grid Page coming soon</p>
+                    <div className="mb-6">
+                      <p className="text-[14px] font-medium text-white mb-1">Completed Grid</p>
+                      <h1 className="text-[28px] font-bold text-[#B197FC]">5 Grids</h1>
+                    </div>
+
+                    <div className="h-[1px] w-full bg-[#171C20] mb-6" />
+
+                    <div className="flex items-center gap-1 mb-6">
+                      <span className="text-[14px] font-medium text-[#7C8992]">Spring26</span>
+                      <ChevronDown size={14} className="text-[#7C8992]" />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Grid Card 1 */}
+                      <div className="bg-[#171C20] rounded-[15px] p-4 flex flex-col relative min-h-[220px]">
+                        <div className="absolute top-4 right-4">
+                          <ChevronRight size={18} className="text-[#7C8992]" />
+                        </div>
+                        <div className="mb-4">
+                          <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-[#B197FC] to-[#748FFC] rounded-lg shadow-lg">
+                            <span className="text-white font-black text-[10px] leading-tight text-center">GR<br/>ID</span>
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-[16px] font-bold text-white mb-1">Grid</h3>
+                          <p className="text-[12px] text-[#7C8992]">101-108</p>
+                        </div>
+                        <div className="mt-4">
+                          <p className="text-[12px] text-[#B197FC]">0 Special Objekt Collected</p>
+                        </div>
+                      </div>
+
+                      {/* Grid Card 2 */}
+                      <div className="bg-[#171C20] rounded-[15px] p-4 flex flex-col relative min-h-[220px]">
+                        <div className="absolute top-4 right-4">
+                          <ChevronRight size={18} className="text-[#7C8992]" />
+                        </div>
+                        <div className="mb-4">
+                          <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-[#B197FC] to-[#748FFC] rounded-lg shadow-lg">
+                            <span className="text-white font-black text-[10px] leading-tight text-center">UN<br/>IT</span>
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-[16px] font-bold text-white mb-1">Unit Grid</h3>
+                          <p className="text-[12px] text-[#7C8992]">301-302</p>
+                        </div>
+                        <div className="mt-4">
+                          <p className="text-[12px] text-[#B197FC]">0 Unit Objekt Collected</p>
+                        </div>
+                      </div>
+                    </div>
                   </motion.div>
                 )}
 
@@ -686,10 +736,88 @@ export default function App() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex flex-col items-center justify-center py-32"
+                    className="flex flex-col min-h-screen pt-4 px-4 pb-32"
                   >
-                    <Heart size={48} className="text-[#2A3338] mb-4" />
-                    <p className="text-[14px] font-medium text-[#ACB9C1]">Play Page coming soon</p>
+                    <h1 className="text-[20px] font-bold text-white mb-6">Enjoy Your Objekt</h1>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Play Card 1 - Proof Shot */}
+                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden group">
+                        <img 
+                          src="https://picsum.photos/seed/proofshot/400/600" 
+                          alt="Proof Shot" 
+                          className="absolute inset-0 w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-black/40" />
+                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                          <div className="flex justify-between items-end">
+                            <div>
+                              <h3 className="text-[16px] font-bold text-white mb-1">Proof Shot</h3>
+                              <p className="text-[11px] text-white/80 leading-tight pr-4">Take a photo with your favorite</p>
+                            </div>
+                            <ChevronRight size={16} className="text-white mb-1" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Play Card 2 - Lenticular */}
+                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden bg-[#171C20] border border-[#2A3338]">
+                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                          <div className="flex justify-between items-end">
+                            <div>
+                              <h3 className="text-[16px] font-bold text-white mb-1">Lenticular</h3>
+                              <p className="text-[11px] text-[#7C8992] leading-tight pr-4">Combine into a New Set</p>
+                            </div>
+                            <ChevronRight size={16} className="text-[#7C8992] mb-1" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Play Card 3 - Spin */}
+                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden bg-[#0D1114] border border-[#2A3338]">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="relative w-3/4 aspect-[2/3] bg-[#171C20] rounded-lg shadow-2xl rotate-[-5deg] overflow-hidden">
+                             <img 
+                              src="https://picsum.photos/seed/spin/200/300" 
+                              alt="Spin" 
+                              className="w-full h-full object-cover opacity-50"
+                              referrerPolicy="no-referrer"
+                            />
+                          </div>
+                          <div className="absolute w-1/2 h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12" />
+                        </div>
+                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                          <div className="flex justify-between items-end">
+                            <div>
+                              <h3 className="text-[16px] font-bold text-white mb-1">Spin</h3>
+                              <p className="text-[11px] text-[#7C8992] leading-tight pr-4">Random Draw</p>
+                            </div>
+                            <ChevronRight size={16} className="text-[#7C8992] mb-1" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Play Card 4 - Toploader Deco */}
+                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden group">
+                        <img 
+                          src="https://picsum.photos/seed/deco/400/600" 
+                          alt="Toploader Deco" 
+                          className="absolute inset-0 w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                        <div className="absolute inset-0 bg-black/30" />
+                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
+                          <div className="flex justify-between items-end">
+                            <div>
+                              <h3 className="text-[16px] font-bold text-white mb-1">Toploader Deco</h3>
+                              <p className="text-[11px] text-white/80 leading-tight pr-4">Customize it to your style</p>
+                            </div>
+                            <ChevronRight size={16} className="text-white mb-1" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -1032,53 +1160,60 @@ export default function App() {
 
       {/* Navigation */}
       {activeTab !== 'shop' && activeTab !== 'pack-detail' && (
-        <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#171C20] border-t-[1.3px] border-[#2A3338] px-4 pt-3 pb-[10px]">
-          <div className="max-w-md mx-auto flex justify-between items-center">
+        <nav className={cn(
+          "fixed bottom-0 left-0 right-0 z-40 bg-[#171C20] border-t-[1.3px] border-[#2A3338] pt-3 pb-[10px]",
+          (activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? "pl-4 pr-0" : "px-4"
+        )}>
+          <div className={cn(
+            "mx-auto flex justify-between items-center",
+            (activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? "w-full" : "max-w-md w-full"
+          )}>
             {(activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? (
               <div className="flex w-full items-center">
                 {/* Previous Page Part */}
-                <div 
-                  className="w-[100px] pr-4 border-r-[1.3px] border-[#2A3338] flex justify-center"
-                  style={{ transform: `translateX(${footerPart1Offset}px)` }}
-                >
-                  <NavButton 
-                    active={false} 
-                    onClick={() => setActiveTab(previousTab)}
-                    icon={
-                      previousTab === 'home' ? <HomeIcon active={false} /> :
-                      previousTab === 'rekord' ? <RekordIcon active={false} /> :
-                      previousTab === 'room' ? <RoomIcon active={false} /> :
-                      previousTab === 'profile' ? <ProfileIcon active={false} /> :
-                      <HomeIcon active={false} />
-                    }
-                    label={previousTab.charAt(0).toUpperCase() + previousTab.slice(1)}
-                  />
+                <div className="w-[100px] pr-4 border-r-[1.3px] border-[#2A3338] flex justify-center">
+                  <div style={{ transform: `translateX(${footerPart1Offset}px)` }}>
+                    <NavButton 
+                      active={false} 
+                      onClick={() => setActiveTab(previousTab)}
+                      icon={
+                        previousTab === 'home' ? <HomeIcon active={false} /> :
+                        previousTab === 'rekord' ? <RekordIcon active={false} /> :
+                        previousTab === 'room' ? <RoomIcon active={false} /> :
+                        previousTab === 'profile' ? <ProfileIcon active={false} /> :
+                        <HomeIcon active={false} />
+                      }
+                      label={previousTab.charAt(0).toUpperCase() + previousTab.slice(1)}
+                    />
+                  </div>
                 </div>
                 
                 {/* Collect Sub-menu Part */}
-                <div 
-                  className="flex-1 flex justify-around"
-                  style={{ paddingLeft: `${footerPart2Padding}px`, paddingRight: `${footerPart2Padding}px` }}
-                >
-                  <NavButton 
-                    active={activeTab === 'collect'} 
-                    onClick={() => setActiveTab('collect')}
-                    layoutId="collect"
-                    icon={<CollectIcon active={activeTab === 'collect'} />}
-                    label="Collect"
-                  />
-                  <NavButton 
-                    active={activeTab === 'grid'} 
-                    onClick={() => setActiveTab('grid')}
-                    icon={<GridIcon active={activeTab === 'grid'} />}
-                    label="Grid"
-                  />
-                  <NavButton 
-                    active={activeTab === 'play'} 
-                    onClick={() => setActiveTab('play')}
-                    icon={<PlayIcon active={activeTab === 'play'} />}
-                    label="Play"
-                  />
+                <div className="flex-1 flex justify-center">
+                  <div 
+                    className="flex justify-around w-full"
+                    style={{ marginLeft: `${footerPart2Padding}px`, marginRight: `${footerPart2Padding}px` }}
+                  >
+                    <NavButton 
+                      active={activeTab === 'collect'} 
+                      onClick={() => setActiveTab('collect')}
+                      layoutId="collect"
+                      icon={<CollectIcon active={activeTab === 'collect'} />}
+                      label="Collect"
+                    />
+                    <NavButton 
+                      active={activeTab === 'grid'} 
+                      onClick={() => setActiveTab('grid')}
+                      icon={<GridIcon active={activeTab === 'grid'} />}
+                      label="Grid"
+                    />
+                    <NavButton 
+                      active={activeTab === 'play'} 
+                      onClick={() => setActiveTab('play')}
+                      icon={<PlayIcon active={activeTab === 'play'} />}
+                      label="Play"
+                    />
+                  </div>
                 </div>
               </div>
             ) : (
@@ -1155,6 +1290,7 @@ export default function App() {
         selectedOnlineStatus={selectedOnlineStatus}
         selectedSeason={selectedSeason}
         initialTab={initialFilterTab}
+        height={filterModalHeight}
         onApply={(artists, types, onlineStatus, season) => {
           setSelectedArtists(artists);
           setSelectedTypes(types);
@@ -1222,31 +1358,46 @@ export default function App() {
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Part 1 Offset (px)</label>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setFooterPart1Offset(footerPart1Offset - 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                <div className="flex items-center justify-center gap-2">
+                  <button onClick={() => setFooterPart1Offset(footerPart1Offset - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
                   <input 
                     type="number" 
                     step="0.1"
                     value={footerPart1Offset} 
                     onChange={(e) => setFooterPart1Offset(parseFloat(e.target.value) || 0)}
-                    className="flex-1 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
                   />
-                  <button onClick={() => setFooterPart1Offset(footerPart1Offset + 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                  <button onClick={() => setFooterPart1Offset(footerPart1Offset + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Part 2 Padding (px)</label>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setFooterPart2Padding(footerPart2Padding - 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                <div className="flex items-center justify-center gap-2">
+                  <button onClick={() => setFooterPart2Padding(footerPart2Padding - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
                   <input 
                     type="number" 
                     step="0.1"
                     value={footerPart2Padding} 
                     onChange={(e) => setFooterPart2Padding(parseFloat(e.target.value) || 0)}
-                    className="flex-1 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
                   />
-                  <button onClick={() => setFooterPart2Padding(footerPart2Padding + 1)} className="w-8 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                  <button onClick={() => setFooterPart2Padding(footerPart2Padding + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Filter Height (vh)</label>
+                <div className="flex items-center justify-center gap-2">
+                  <button onClick={() => setFilterModalHeight(filterModalHeight - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <input 
+                    type="number" 
+                    step="0.1"
+                    value={filterModalHeight} 
+                    onChange={(e) => setFilterModalHeight(parseFloat(e.target.value) || 0)}
+                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                  />
+                  <button onClick={() => setFilterModalHeight(filterModalHeight + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
                 </div>
               </div>
             </div>
