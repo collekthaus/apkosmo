@@ -104,9 +104,15 @@ export default function App() {
   const [initialFilterTab, setInitialFilterTab] = useState<'Artist' | 'Season' | 'Type' | 'On/Offline' | 'Other'>('Artist');
   
   // Debug states
-  const [footerPart1Offset, setFooterPart1Offset] = useState(0);
-  const [footerPart2Padding, setFooterPart2Padding] = useState(16);
-  const [filterModalHeight, setFilterModalHeight] = useState(78);
+  const [footerPart1Offset, setFooterPart1Offset] = useState(-6);
+  const [footerPart2Padding, setFooterPart2Padding] = useState(12);
+  const [filterModalHeight, setFilterModalHeight] = useState(60);
+  const [footerHeight, setFooterHeight] = useState(64);
+  const [tabTextSize, setTabTextSize] = useState(12);
+  const [iconSize, setIconSize] = useState(20);
+  const [defaultFooterSpacing, setDefaultFooterSpacing] = useState(0);
+  const [dividerHeight, setDividerHeight] = useState(32);
+  const [tabIconGap, setTabIconGap] = useState(4);
   const [isDebugOpen, setIsDebugOpen] = useState(false);
 
   const toggleFilter = (filter: string) => {
@@ -1160,18 +1166,21 @@ export default function App() {
 
       {/* Navigation */}
       {activeTab !== 'shop' && activeTab !== 'pack-detail' && (
-        <nav className={cn(
-          "fixed bottom-0 left-0 right-0 z-40 bg-[#171C20] border-t-[1.3px] border-[#2A3338] pt-3 pb-[10px]",
-          (activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? "pl-4 pr-0" : "px-4"
-        )}>
+        <nav 
+          className={cn(
+            "fixed bottom-0 left-0 right-0 z-40 bg-[#171C20] border-t-[1.3px] border-[#2A3338] flex items-center",
+            (activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? "pl-4 pr-0" : "px-4"
+          )}
+          style={{ height: `${footerHeight}px` }}
+        >
           <div className={cn(
-            "mx-auto flex justify-between items-center",
+            "mx-auto flex justify-between items-center h-full",
             (activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? "w-full" : "max-w-md w-full"
           )}>
             {(activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? (
-              <div className="flex w-full items-center">
+              <div className="flex w-full items-center h-full relative">
                 {/* Previous Page Part */}
-                <div className="w-[100px] pr-4 border-r-[1.3px] border-[#2A3338] flex justify-center">
+                <div className="w-[100px] pr-4 flex justify-center items-center h-full relative">
                   <div style={{ transform: `translateX(${footerPart1Offset}px)` }}>
                     <NavButton 
                       active={false} 
@@ -1184,12 +1193,20 @@ export default function App() {
                         <HomeIcon active={false} />
                       }
                       label={previousTab.charAt(0).toUpperCase() + previousTab.slice(1)}
+                      textSize={tabTextSize}
+                      iconSize={previousTab === 'rekord' ? iconSize + 3 : iconSize}
+                      gap={tabIconGap}
                     />
                   </div>
+                  {/* Vertical Divider */}
+                  <div 
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[1.3px] bg-[#2A3338]"
+                    style={{ height: `${dividerHeight}px` }}
+                  />
                 </div>
                 
                 {/* Collect Sub-menu Part */}
-                <div className="flex-1 flex justify-center">
+                <div className="flex-1 flex justify-center items-center h-full">
                   <div 
                     className="flex justify-around w-full"
                     style={{ marginLeft: `${footerPart2Padding}px`, marginRight: `${footerPart2Padding}px` }}
@@ -1200,24 +1217,36 @@ export default function App() {
                       layoutId="collect"
                       icon={<CollectIcon active={activeTab === 'collect'} />}
                       label="Collect"
+                      textSize={tabTextSize}
+                      iconSize={iconSize}
+                      gap={tabIconGap}
                     />
                     <NavButton 
                       active={activeTab === 'grid'} 
                       onClick={() => setActiveTab('grid')}
                       icon={<GridIcon active={activeTab === 'grid'} />}
                       label="Grid"
+                      textSize={tabTextSize}
+                      iconSize={iconSize}
+                      gap={tabIconGap}
                     />
                     <NavButton 
                       active={activeTab === 'play'} 
                       onClick={() => setActiveTab('play')}
                       icon={<PlayIcon active={activeTab === 'play'} />}
                       label="Play"
+                      textSize={tabTextSize}
+                      iconSize={iconSize}
+                      gap={tabIconGap}
                     />
                   </div>
                 </div>
               </div>
             ) : (
-              <>
+              <div 
+                className="flex w-full justify-between items-center h-full"
+                style={{ gap: `${defaultFooterSpacing}px` }}
+              >
                 <NavButton 
                   active={activeTab === 'home'} 
                   onClick={() => {
@@ -1226,6 +1255,9 @@ export default function App() {
                   }}
                   icon={<HomeIcon active={activeTab === 'home'} />}
                   label="Home"
+                  textSize={tabTextSize}
+                  iconSize={iconSize}
+                  gap={tabIconGap}
                 />
                 <NavButton 
                   active={activeTab === 'rekord'} 
@@ -1235,6 +1267,9 @@ export default function App() {
                   }}
                   icon={<RekordIcon active={activeTab === 'rekord'} />}
                   label="Rekord"
+                  textSize={tabTextSize}
+                  iconSize={iconSize + 3}
+                  gap={tabIconGap}
                 />
                 <NavButton 
                   active={activeTab === 'collect'} 
@@ -1245,6 +1280,9 @@ export default function App() {
                   layoutId="collect"
                   icon={<CollectIcon active={activeTab === 'collect'} />}
                   label="Collect"
+                  textSize={tabTextSize}
+                  iconSize={iconSize}
+                  gap={tabIconGap}
                 />
                 <NavButton 
                   active={activeTab === 'room'} 
@@ -1254,6 +1292,9 @@ export default function App() {
                   }}
                   icon={<RoomIcon active={activeTab === 'room'} />}
                   label="Room"
+                  textSize={tabTextSize}
+                  iconSize={iconSize}
+                  gap={tabIconGap}
                 />
                 <NavButton 
                   active={activeTab === 'profile'} 
@@ -1263,8 +1304,11 @@ export default function App() {
                   }}
                   icon={<ProfileIcon active={activeTab === 'profile'} />}
                   label="Profile"
+                  textSize={tabTextSize}
+                  iconSize={iconSize}
+                  gap={tabIconGap}
                 />
-              </>
+              </div>
             )}
           </div>
         </nav>
@@ -1357,47 +1401,86 @@ export default function App() {
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Part 1 Offset (px)</label>
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Footer Height (px)</label>
                 <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setFooterPart1Offset(footerPart1Offset - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <button onClick={() => setFooterHeight(footerHeight - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
                   <input 
                     type="number" 
-                    step="0.1"
-                    value={footerPart1Offset} 
-                    onChange={(e) => setFooterPart1Offset(parseFloat(e.target.value) || 0)}
+                    value={footerHeight} 
+                    onChange={(e) => setFooterHeight(parseInt(e.target.value) || 0)}
                     className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
                   />
-                  <button onClick={() => setFooterPart1Offset(footerPart1Offset + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                  <button onClick={() => setFooterHeight(footerHeight + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Part 2 Padding (px)</label>
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Tab Text Size (px)</label>
                 <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setFooterPart2Padding(footerPart2Padding - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <button onClick={() => setTabTextSize(tabTextSize - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
                   <input 
                     type="number" 
-                    step="0.1"
-                    value={footerPart2Padding} 
-                    onChange={(e) => setFooterPart2Padding(parseFloat(e.target.value) || 0)}
+                    value={tabTextSize} 
+                    onChange={(e) => setTabTextSize(parseInt(e.target.value) || 0)}
                     className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
                   />
-                  <button onClick={() => setFooterPart2Padding(footerPart2Padding + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                  <button onClick={() => setTabTextSize(tabTextSize + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Filter Height (vh)</label>
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Icon Size (px)</label>
                 <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setFilterModalHeight(filterModalHeight - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <button onClick={() => setIconSize(iconSize - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
                   <input 
                     type="number" 
-                    step="0.1"
-                    value={filterModalHeight} 
-                    onChange={(e) => setFilterModalHeight(parseFloat(e.target.value) || 0)}
+                    value={iconSize} 
+                    onChange={(e) => setIconSize(parseInt(e.target.value) || 0)}
                     className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
                   />
-                  <button onClick={() => setFilterModalHeight(filterModalHeight + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                  <button onClick={() => setIconSize(iconSize + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Default Footer Spacing (px)</label>
+                <div className="flex items-center justify-center gap-2">
+                  <button onClick={() => setDefaultFooterSpacing(defaultFooterSpacing - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <input 
+                    type="number" 
+                    value={defaultFooterSpacing} 
+                    onChange={(e) => setDefaultFooterSpacing(parseInt(e.target.value) || 0)}
+                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                  />
+                  <button onClick={() => setDefaultFooterSpacing(defaultFooterSpacing + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Divider Height (px)</label>
+                <div className="flex items-center justify-center gap-2">
+                  <button onClick={() => setDividerHeight(dividerHeight - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <input 
+                    type="number" 
+                    value={dividerHeight} 
+                    onChange={(e) => setDividerHeight(parseInt(e.target.value) || 0)}
+                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                  />
+                  <button onClick={() => setDividerHeight(dividerHeight + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Tab Icon Gap (px)</label>
+                <div className="flex items-center justify-center gap-2">
+                  <button onClick={() => setTabIconGap(tabIconGap - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
+                  <input 
+                    type="number" 
+                    value={tabIconGap} 
+                    onChange={(e) => setTabIconGap(parseInt(e.target.value) || 0)}
+                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
+                  />
+                  <button onClick={() => setTabIconGap(tabIconGap + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
                 </div>
               </div>
             </div>
@@ -1409,16 +1492,20 @@ export default function App() {
 }
 
 
-function NavButton({ active, onClick, icon, label, layoutId }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string, layoutId?: string }) {
+function NavButton({ active, onClick, icon, label, layoutId, textSize, iconSize, gap }: { active: boolean, onClick: () => void, icon: React.ReactNode, label: string, layoutId?: string, textSize?: number, iconSize?: number, gap?: number }) {
   return (
     <button 
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-1 flex-1",
+        "flex flex-col items-center flex-1",
         active ? "text-[#FBFBFD]" : "text-[#7C8992]"
       )}
+      style={{ gap: gap !== undefined ? `${gap}px` : '4px' }}
     >
-      <div className="relative h-[24px] w-[24px] flex items-center justify-center">
+      <div 
+        className="relative flex items-center justify-center"
+        style={{ height: iconSize ? iconSize + 4 : 24, width: iconSize ? iconSize + 4 : 24 }}
+      >
         <AnimatePresence mode="wait">
           <motion.div 
             key={layoutId ? layoutId : label}
@@ -1428,14 +1515,17 @@ function NavButton({ active, onClick, icon, label, layoutId }: { active: boolean
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {icon}
+            {React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement, { size: iconSize } as any) : icon}
           </motion.div>
         </AnimatePresence>
       </div>
-      <span className={cn(
-        "text-[12px] tracking-tight",
-        active ? "font-semibold" : "font-normal"
-      )}>{label}</span>
+      <span 
+        className={cn(
+          "tracking-tight",
+          active ? "font-semibold" : "font-normal"
+        )}
+        style={{ fontSize: textSize ? `${textSize}px` : '12px' }}
+      >{label}</span>
     </button>
   );
 }

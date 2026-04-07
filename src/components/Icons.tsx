@@ -24,8 +24,8 @@ export const ComoIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   </svg>
 );
 
-export const HomeIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93.82 99" className="w-[20px] h-[20px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+export const HomeIcon = ({ active, size = 20 }: { active: boolean, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93.82 99" style={{ width: size, height: size }} fill={active ? "#FBFBFD" : "#7C8992"}>
     <title>Home</title>
     <g id="Camada_2" data-name="Camada 2">
       <g id="Camada_1-2" data-name="Camada 1">
@@ -35,8 +35,8 @@ export const HomeIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-export const RekordIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 111.91 80.39" className="w-[22px] h-[22px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+export const RekordIcon = ({ active, size = 20 }: { active: boolean, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 111.91 80.39" style={{ width: size, height: size }} fill={active ? "#FBFBFD" : "#7C8992"}>
     <title>Rekord</title>
     <g id="Camada_2" data-name="Camada 2">
       <g id="Camada_1-2" data-name="Camada 1">
@@ -47,8 +47,8 @@ export const RekordIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-export const CollectIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98.69 98.45" className="w-[20px] h-[20px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+export const CollectIcon = ({ active, size = 20 }: { active: boolean, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 98.69 98.45" style={{ width: size, height: size }} fill={active ? "#FBFBFD" : "#7C8992"}>
     <title>Collect</title>
     <g id="Camada_2" data-name="Camada 2">
       <g id="Camada_1-2" data-name="Camada 1">
@@ -58,8 +58,8 @@ export const CollectIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-export const RoomIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.61 104.68" className="w-[20px] h-[20px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+export const RoomIcon = ({ active, size = 20 }: { active: boolean, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 86.61 104.68" style={{ width: size, height: size }} fill={active ? "#FBFBFD" : "#7C8992"}>
     <title>Ativo 7</title>
     <g id="Camada_2" data-name="Camada 2">
       <g id="Camada_1-2" data-name="Camada 1">
@@ -70,8 +70,8 @@ export const RoomIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-export const ProfileIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104.97 104.97" className="w-[20px] h-[20px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+export const ProfileIcon = ({ active, size = 20 }: { active: boolean, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104.97 104.97" style={{ width: size, height: size }} fill={active ? "#FBFBFD" : "#7C8992"}>
     <title>Profile</title>
     <g id="Camada_2" data-name="Camada 2">
       <g id="Camada_1-2" data-name="Camada 1">
@@ -82,8 +82,8 @@ export const ProfileIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-export const GridIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52.52 52.86" className="w-[22px] h-[22px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+export const GridIcon = ({ active, size = 20 }: { active: boolean, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52.52 52.86" style={{ width: size, height: size }} fill={active ? "#FBFBFD" : "#7C8992"}>
     <title>Grid</title>
     <g id="Camada_2" data-name="Camada 2">
       <g id="Camada_1-2" data-name="Camada 1">
@@ -95,8 +95,8 @@ export const GridIcon = ({ active }: { active: boolean }) => (
   </svg>
 );
 
-export const PlayIcon = ({ active }: { active: boolean }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55.17 52.3" className="w-[22px] h-[22px]" fill={active ? "#FBFBFD" : "#7C8992"}>
+export const PlayIcon = ({ active, size = 20 }: { active: boolean, size?: number }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 55.17 52.3" style={{ width: size, height: size }} fill={active ? "#FBFBFD" : "#7C8992"}>
     <title>Play</title>
     <g id="Camada_2" data-name="Camada 2">
       <g id="Camada_1-2" data-name="Camada 1">
