@@ -130,3 +130,53 @@ export const QRCodeIcon = ({ className = "" }: { className?: string }) => (
     </g>
   </svg>
 );
+
+export const PinIcon = ({ size = 20, fill = "currentColor", className = "" }: { size?: number, fill?: string, className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 51.75 66.13" style={{ width: size, height: size }} fill={fill} className={className}>
+    <title>Pin (30dg)</title>
+    <g id="Camada_2" data-name="Camada 2">
+      <g id="Camada_1-2" data-name="Camada 1">
+        <path d="M34.77,51,34,41.47a2,2,0,0,1,.27-1.18l11.54-20a.82.82,0,0,1,1.11-.3l1.7,1a.82.82,0,0,0,1.11-.3l1.94-3.36a.82.82,0,0,0-.3-1.11l-2.4-1.39L25.37,1.23,23.43.11a.81.81,0,0,0-1.1.29L20.39,3.77a.79.79,0,0,0,.29,1.1L22,5.63a.8.8,0,0,1,.3,1.09L11,26.91a2,2,0,0,1-.88.83L1.57,31.86a2.77,2.77,0,0,0-.18,4.9l12.23,7.07L3.2,61.87A2.87,2.87,0,0,0,4,65.69a2.75,2.75,0,0,0,3.88-.93l10.5-18.18,12.23,7.06A2.77,2.77,0,0,0,34.77,51Zm-6.42-5L9.1,34.87a.31.31,0,0,1,0-.54l5-2.39a2,2,0,0,0,.88-.83L27.05,9.49a.79.79,0,0,1,1.1-.3l12.57,7.25a.82.82,0,0,1,.3,1.11L28.61,39a2.11,2.11,0,0,0-.26,1.18l.46,5.48A.31.31,0,0,1,28.35,46Z"/>
+      </g>
+    </g>
+  </svg>
+);
+
+export const LenticularIcon = ({ size = 20, fill = "currentColor", className = "" }: { size?: number, fill?: string, className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56.36 72.62" style={{ width: size, height: size }} fill={fill} className={className}>
+    <title>Lenticular (5,5px)</title>
+    <g id="Camada_2" data-name="Camada 2">
+      <g id="Camada_1-2" data-name="Camada 1">
+        <path d="M48,0H25.35A8.4,8.4,0,0,0,17,8.39v8.26H8.39A8.39,8.39,0,0,0,0,25V64.23a8.39,8.39,0,0,0,8.39,8.39H31a8.4,8.4,0,0,0,8.39-8.39V56H48a8.39,8.39,0,0,0,8.39-8.39V8.39A8.39,8.39,0,0,0,48,0ZM33.91,64.23A2.9,2.9,0,0,1,31,67.12H8.39A2.9,2.9,0,0,1,5.5,64.23V25a2.9,2.9,0,0,1,2.89-2.89H17V47.58A8.4,8.4,0,0,0,25.35,56h8.56Zm0-13.76H25.35a2.89,2.89,0,0,1-2.9-2.89V22.15H31A2.9,2.9,0,0,1,33.91,25Zm17-2.89A2.89,2.89,0,0,1,48,50.47H39.41V25A8.4,8.4,0,0,0,31,16.65H22.45V8.39a2.9,2.9,0,0,1,2.9-2.89H48a2.89,2.89,0,0,1,2.89,2.89Z"/>
+      </g>
+    </g>
+  </svg>
+);
+
+export const FlashIcon = ({ size = 20, fill = "currentColor", className = "" }: { size?: number, fill?: string, className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40.87 70.78" style={{ width: size, height: size }} fill={fill} className={className}>
+    <title>Border (5,5px)</title>
+    <g id="Camada_2" data-name="Camada 2">
+      <g id="Camada_1-2" data-name="Camada 1">
+        <path d="M35.33,0H5.54A5.54,5.54,0,0,0,0,5.54V16.48a11.9,11.9,0,0,0,2.12,6.8L6,29A9,9,0,0,1,7.62,34l.1,30.8a6,6,0,0,0,6,6H27.78a6,6,0,0,0,6-6l-.11-30.66a9,9,0,0,1,1.55-5.08l3.6-5.3A11.92,11.92,0,0,0,40.87,17V5.54A5.55,5.55,0,0,0,35.33,0ZM5.54,5.5l29.83,0V10H5.5V5.54A0,0,0,0,1,5.54,5.5ZM34.25,20.67,30.65,26a14.5,14.5,0,0,0-2.5,8.19l.11,30.65a.48.48,0,0,1-.48.48H13.7a.48.48,0,0,1-.48-.47L13.12,34a14.48,14.48,0,0,0-2.56-8.18L6.65,20.16A6.46,6.46,0,0,1,5.5,16.48v-1H35.37V17A6.48,6.48,0,0,1,34.25,20.67Z"/><path d="M20.43,38.16a4.76,4.76,0,1,0,4.76,4.75A4.75,4.75,0,0,0,20.43,38.16Z"/>
+      </g>
+    </g>
+  </svg>
+);
+
+export const SendIcon = ({ size = 20, fill = "currentColor", className = "" }: { size?: number, fill?: string, className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 43.14 43.14" style={{ width: size, height: size }} fill={fill} className={className}>
+    <title>Send</title>
+    <g id="Camada_2" data-name="Camada 2">
+      <g id="Camada_1-2" data-name="Camada 1">
+        <path d="M23.28,42.19a3.16,3.16,0,0,1-.78-1.25L17.62,26.8a6.27,6.27,0,0,1-.24-1,6.27,6.27,0,0,1-1-.24l-14-4.83A3.39,3.39,0,0,1,0,18a3.45,3.45,0,0,1,2.17-3.7L38.63.23A3.33,3.33,0,0,1,42.18,1a3.34,3.34,0,0,1,.73,3.56L28.81,40.92a3.45,3.45,0,0,1-3.28,2.22A3.28,3.28,0,0,1,23.28,42.19ZM36.08,6,8.68,16.65a.78.78,0,0,0,0,1.47l9.1,3.14a1.24,1.24,0,0,0,1.24-.36l6.64-6.63a2.25,2.25,0,0,1,3.18,0h0a2.25,2.25,0,0,1,0,3.18l-6.63,6.63a1.26,1.26,0,0,0-.36,1.25L25,34.43a.79.79,0,0,0,1.48,0L37.1,7.06A.79.79,0,0,0,36.08,6Z"/>
+      </g>
+    </g>
+  </svg>
+);
+
+export const ChevronRightIcon = ({ size = 20, fill = "currentColor", className = "" }: { size?: number, fill?: string, className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" style={{ width: size, height: size }} fill={fill} className={className}>
+    <path d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"/>
+  </svg>
+);

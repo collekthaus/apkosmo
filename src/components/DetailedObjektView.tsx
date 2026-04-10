@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'motion/react';
-import { ChevronLeft, Send, Pin, Layers, Flashlight } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { Objekt } from '../types';
 import { cn } from '../lib/utils';
-import { LogoIcon } from './Icons';
+import { LogoIcon, SendIcon, PinIcon, LenticularIcon, FlashIcon } from './Icons';
 
 interface DetailedObjektViewProps {
   objekt: Objekt;
@@ -87,7 +87,7 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
           <ChevronLeft size={28} />
         </button>
         <button className="flex items-center gap-2">
-          <Send size={19} />
+          <SendIcon size={18} />
           <span style={{ fontSize: '14px', fontWeight: 600 }}>
             Send
           </span>
@@ -270,17 +270,17 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
           style={{ gap: '36px' }}
         >
           <ActionButton 
-            icon={<Pin size={26} />} 
+            icon={<PinIcon size={26} />} 
             size={46}
             borderSize={2.2}
           />
           <ActionButton 
-            icon={<Layers size={26} />} 
+            icon={<LenticularIcon size={26} />} 
             size={46}
             borderSize={2.2}
           />
           <ActionButton 
-            icon={<Flashlight size={26} />} 
+            icon={<FlashIcon size={26} />} 
             size={46}
             borderSize={2.2}
             active={isFlashActive}

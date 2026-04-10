@@ -18,7 +18,6 @@ import {
   ChevronLeft,
   Heart,
   Check,
-  Pin,
   RotateCw,
   Settings,
   X
@@ -38,11 +37,37 @@ import {
   RoomIcon,
   GridIcon,
   PlayIcon,
-  ProfileIcon
+  ProfileIcon,
+  PinIcon,
+  ChevronRightIcon
 } from './components/Icons';
 
 import { DetailedObjektView } from './components/DetailedObjektView';
 import { ArtistFilterModal } from './components/ArtistFilterModal';
+
+const getAvailableSeasons = () => {
+  const seasons = Array.from(new Set(OBJEKT_POOL.map(o => o.Season)));
+  const grouped: { [name: string]: string[] } = {};
+  
+  seasons.forEach(s => {
+    const match = s.match(/^([a-zA-Z]+)(\d+)$/);
+    if (match) {
+      const name = match[1];
+      const num = match[2];
+      if (!grouped[name]) grouped[name] = [];
+      grouped[name].push(num);
+    }
+  });
+
+  Object.keys(grouped).forEach(name => {
+    grouped[name].sort((a, b) => parseInt(b) - parseInt(a));
+  });
+
+  return grouped;
+};
+
+const AVAILABLE_SEASONS = getAvailableSeasons();
+const SEASON_NAMES = ['Spring', 'Summer', 'Autumn', 'Winter'];
 
 type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail' | 'grid' | 'play';
 
@@ -103,17 +128,56 @@ export default function App() {
   const [isArtistFilterOpen, setIsArtistFilterOpen] = useState(false);
   const [initialFilterTab, setInitialFilterTab] = useState<'Artist' | 'Season' | 'Type' | 'On/Offline' | 'Other'>('Artist');
   
-  // Debug states
-  const [footerPart1Offset, setFooterPart1Offset] = useState(-6);
-  const [footerPart2Padding, setFooterPart2Padding] = useState(12);
-  const [filterModalHeight, setFilterModalHeight] = useState(60);
-  const [footerHeight, setFooterHeight] = useState(64);
-  const [tabTextSize, setTabTextSize] = useState(12);
-  const [iconSize, setIconSize] = useState(20);
-  const [defaultFooterSpacing, setDefaultFooterSpacing] = useState(0);
-  const [dividerHeight, setDividerHeight] = useState(32);
-  const [tabIconGap, setTabIconGap] = useState(4);
-  const [isDebugOpen, setIsDebugOpen] = useState(false);
+  // Debug states for Play page
+  const [playPageTitleSize, setPlayPageTitleSize] = useState(16);
+  const [playCardCornerRadius, setPlayCardCornerRadius] = useState(14);
+  const [playCardHeightOffset, setPlayCardHeightOffset] = useState(4);
+  const [playCardWidthOffset, setPlayCardWidthOffset] = useState(-9);
+  const [playCardTitleSize, setPlayCardTitleSize] = useState(14.4);
+  const [playCardDescSize, setPlayCardDescSize] = useState(10.9);
+  const [playCardDescLineGap, setPlayCardDescLineGap] = useState(1.55);
+  const [playCardTextGroupX, setPlayCardTextGroupX] = useState(-2);
+  const [playCardTextGroupY, setPlayCardTextGroupY] = useState(0);
+  const [playCardTitleDescGap, setPlayCardTitleDescGap] = useState(6);
+  const [playCardChevronSize, setPlayCardChevronSize] = useState(14);
+  const [playPageHeaderGap, setPlayPageHeaderGap] = useState(0);
+  const [playPageTitleCardGap, setPlayPageTitleCardGap] = useState(24);
+  const [playCardVerticalGap, setPlayCardVerticalGap] = useState(19);
+  const [playCardHorizontalGap, setPlayCardHorizontalGap] = useState(7);
+  const [playCardGradientHeight, setPlayCardGradientHeight] = useState(30);
+  const [playCardGradientOpacity, setPlayCardGradientOpacity] = useState(0.9);
+
+  // Debug states for Grid page
+  const [gridPageHeaderGap, setGridPageHeaderGap] = useState(4);
+  const [gridCompletedTextWeight, setGridCompletedTextWeight] = useState(500);
+  const [gridCompletedTextSize, setGridCompletedTextSize] = useState(14);
+  const [gridCompletedCounterGap, setGridCompletedCounterGap] = useState(1);
+  const [gridCounterWeight, setGridCounterWeight] = useState(700);
+  const [gridCounterSize, setGridCounterSize] = useState(28);
+  const [gridCounterLineGap, setGridCounterLineGap] = useState(24);
+  const [gridLineSeasonGap, setGridLineSeasonGap] = useState(24);
+  const [gridSeasonCardGap, setGridSeasonCardGap] = useState(24);
+  const [gridCardHeight, setGridCardHeight] = useState(220);
+  const [gridCardCornerRadius, setGridCardCornerRadius] = useState(15);
+  const [gridCardTitleWeight, setGridCardTitleWeight] = useState(700);
+  const [gridCardTitleSize, setGridCardTitleSize] = useState(16);
+  const [gridCardTypeWeight, setGridCardTypeWeight] = useState(400);
+  const [gridCardTypeSize, setGridCardTypeSize] = useState(12);
+  const [gridCardCollectedWeight, setGridCardCollectedWeight] = useState(400);
+  const [gridCardCollectedSize, setGridCardCollectedSize] = useState(12);
+  const [gridCardTitleIconGap, setGridCardTitleIconGap] = useState(16);
+  const [gridCardTitleTypeGap, setGridCardTitleTypeGap] = useState(4);
+  const [gridCardCollectedY, setGridCardCollectedY] = useState(0);
+  const [gridCardTextGroupX, setGridCardTextGroupX] = useState(0);
+  const [gridCardChevronSize, setGridCardChevronSize] = useState(18);
+  const [gridCardChevronX, setGridCardChevronX] = useState(16);
+  const [gridCardChevronY, setGridCardChevronY] = useState(16);
+  const [gridSeasonFilterHeight, setGridSeasonFilterHeight] = useState(400);
+  const [gridSeasonFilterTitleSize, setGridSeasonFilterTitleSize] = useState(18);
+  const [gridSeasonFilterTitleWeight, setGridSeasonFilterTitleWeight] = useState(600);
+  const [isGridSeasonFilterOpen, setIsGridSeasonFilterOpen] = useState(false);
+  const [tempGridSeason, setTempGridSeason] = useState<string | null>("Spring26");
+  const [selectedGridSeasonName, setSelectedGridSeasonName] = useState<string | null>("Spring");
 
   const toggleFilter = (filter: string) => {
     if (filter === 'Artist' || filter === 'Type' || filter === 'On/Offline' || filter === 'Season' || filter === 'Other') {
@@ -398,13 +462,13 @@ export default function App() {
               >
                 Shop
               </button>
-              {activeTab !== 'collect' && (
+              {activeTab !== 'collect' && activeTab !== 'play' && activeTab !== 'grid' && (
                 <div className="flex items-center gap-[20px] bg-[#171C20] rounded-[10px] px-[6px] py-[4px] border-[1.4px] border-[#232A30]">
                   <ComoIcon className="w-[17px] h-[17px] text-[#395EC6]" />
                   <span className="text-[13px] font-medium text-[#FBFBFB]">{stats.como}</span>
                 </div>
               )}
-              {activeTab !== 'home' && <QRCodeIcon className="w-[18px] h-[18px] text-[#D0D7DD]" />}
+              {activeTab !== 'home' && activeTab !== 'play' && activeTab !== 'grid' && <QRCodeIcon className="w-[18px] h-[18px] text-[#D0D7DD]" />}
             </div>
           </div>
 
@@ -581,12 +645,6 @@ export default function App() {
                     <div className="px-4 py-2 flex justify-between items-center text-[13px] font-medium text-[#D2D7DD]">
                       <div className="flex items-center gap-2">
                         <span>{sortedInventory.length} types</span>
-                        <button 
-                          onClick={() => setIsDebugOpen(true)}
-                          className="w-5 h-5 rounded-full bg-[#171C20] border border-[#2A3338] flex items-center justify-center text-[#7C8992]"
-                        >
-                          <Settings size={12} />
-                        </button>
                       </div>
                       <div className="relative">
                         <button 
@@ -680,59 +738,340 @@ export default function App() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex flex-col min-h-screen pt-4 px-4 pb-32"
+                    className="flex flex-col min-h-screen px-4 pb-32"
+                    style={{ paddingTop: `${gridPageHeaderGap}px` }}
                   >
-                    <div className="mb-6">
-                      <p className="text-[14px] font-medium text-white mb-1">Completed Grid</p>
-                      <h1 className="text-[28px] font-bold text-[#B197FC]">5 Grids</h1>
+                    <div className="flex flex-col">
+                      <p 
+                        className="text-white"
+                        style={{ 
+                          fontWeight: gridCompletedTextWeight,
+                          fontSize: `${gridCompletedTextSize}px`,
+                          marginBottom: `${gridCompletedCounterGap}px`
+                        }}
+                      >
+                        Completed Grid
+                      </p>
+                      <h1 
+                        className="text-[#B197FC]"
+                        style={{ 
+                          fontWeight: gridCounterWeight,
+                          fontSize: `${gridCounterSize}px`,
+                          marginBottom: `${gridCounterLineGap}px`
+                        }}
+                      >
+                        5 Grids
+                      </h1>
                     </div>
 
-                    <div className="h-[1px] w-full bg-[#171C20] mb-6" />
+                    <div className="h-[1px] w-full bg-[#171C20]" style={{ marginBottom: `${gridCounterLineGap}px` }} />
 
-                    <div className="flex items-center gap-1 mb-6">
-                      <span className="text-[14px] font-medium text-[#7C8992]">Spring26</span>
+                    <button 
+                      onClick={() => setIsGridSeasonFilterOpen(true)}
+                      className="flex items-center gap-1"
+                      style={{ marginBottom: `${gridLineSeasonGap}px` }}
+                    >
+                      <span className="font-medium text-[#7C8992]" style={{ fontSize: '14px' }}>Spring26</span>
                       <ChevronDown size={14} className="text-[#7C8992]" />
-                    </div>
+                    </button>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4" style={{ marginTop: `${gridSeasonCardGap}px` }}>
                       {/* Grid Card 1 */}
-                      <div className="bg-[#171C20] rounded-[15px] p-4 flex flex-col relative min-h-[220px]">
-                        <div className="absolute top-4 right-4">
-                          <ChevronRight size={18} className="text-[#7C8992]" />
+                      <div 
+                        className="bg-[#171C20] p-4 flex flex-col relative border-[1.3px] border-[#232A30]"
+                        style={{ 
+                          height: `${gridCardHeight}px`,
+                          borderRadius: `${gridCardCornerRadius}px`
+                        }}
+                      >
+                        <div 
+                          className="absolute"
+                          style={{ 
+                            top: `${gridCardChevronY}px`, 
+                            right: `${gridCardChevronX}px` 
+                          }}
+                        >
+                          <ChevronRightIcon size={gridCardChevronSize} fill="#ADB7C0" />
                         </div>
-                        <div className="mb-4">
-                          <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-[#B197FC] to-[#748FFC] rounded-lg shadow-lg">
-                            <span className="text-white font-black text-[10px] leading-tight text-center">GR<br/>ID</span>
+                        <div 
+                          className="flex flex-col"
+                          style={{ 
+                            transform: `translateX(${gridCardTextGroupX}px)`,
+                            gap: `${gridCardTitleIconGap}px`
+                          }}
+                        >
+                          <img 
+                            src="https://picsum.photos/seed/grid-icon/40/40" 
+                            alt="GRID" 
+                            className="w-[20px] h-[20px] object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div className="flex flex-col" style={{ gap: `${gridCardTitleTypeGap}px` }}>
+                            <h3 
+                              className="text-white leading-none"
+                              style={{ 
+                                fontWeight: gridCardTitleWeight,
+                                fontSize: `${gridCardTitleSize}px`
+                              }}
+                            >
+                              Grid
+                            </h3>
+                            <p 
+                              className="text-[#ADB7C0] leading-none"
+                              style={{ 
+                                fontWeight: gridCardTypeWeight,
+                                fontSize: `${gridCardTypeSize}px`
+                              }}
+                            >
+                              101-108
+                            </p>
                           </div>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-[16px] font-bold text-white mb-1">Grid</h3>
-                          <p className="text-[12px] text-[#7C8992]">101-108</p>
-                        </div>
-                        <div className="mt-4">
-                          <p className="text-[12px] text-[#B197FC]">0 Special Objekt Collected</p>
+                        <div className="mt-auto" style={{ transform: `translateY(${gridCardCollectedY}px)` }}>
+                          <p 
+                            className="text-[#B197FC]"
+                            style={{ 
+                              fontWeight: gridCardCollectedWeight,
+                              fontSize: `${gridCardCollectedSize}px`
+                            }}
+                          >
+                            0 Special Objekt Collected
+                          </p>
                         </div>
                       </div>
 
                       {/* Grid Card 2 */}
-                      <div className="bg-[#171C20] rounded-[15px] p-4 flex flex-col relative min-h-[220px]">
-                        <div className="absolute top-4 right-4">
-                          <ChevronRight size={18} className="text-[#7C8992]" />
+                      <div 
+                        className="bg-[#171C20] p-4 flex flex-col relative border-[1.3px] border-[#232A30]"
+                        style={{ 
+                          height: `${gridCardHeight}px`,
+                          borderRadius: `${gridCardCornerRadius}px`
+                        }}
+                      >
+                        <div 
+                          className="absolute"
+                          style={{ 
+                            top: `${gridCardChevronY}px`, 
+                            right: `${gridCardChevronX}px` 
+                          }}
+                        >
+                          <ChevronRightIcon size={gridCardChevronSize} fill="#ADB7C0" />
                         </div>
-                        <div className="mb-4">
-                          <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-[#B197FC] to-[#748FFC] rounded-lg shadow-lg">
-                            <span className="text-white font-black text-[10px] leading-tight text-center">UN<br/>IT</span>
+                        <div 
+                          className="flex flex-col"
+                          style={{ 
+                            transform: `translateX(${gridCardTextGroupX}px)`,
+                            gap: `${gridCardTitleIconGap}px`
+                          }}
+                        >
+                          <img 
+                            src="https://picsum.photos/seed/unit-icon/40/40" 
+                            alt="UNIT" 
+                            className="w-[20px] h-[20px] object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div className="flex flex-col" style={{ gap: `${gridCardTitleTypeGap}px` }}>
+                            <h3 
+                              className="text-white leading-none"
+                              style={{ 
+                                fontWeight: gridCardTitleWeight,
+                                fontSize: `${gridCardTitleSize}px`
+                              }}
+                            >
+                              Unit Grid
+                            </h3>
+                            <p 
+                              className="text-[#ADB7C0] leading-none"
+                              style={{ 
+                                fontWeight: gridCardTypeWeight,
+                                fontSize: `${gridCardTypeSize}px`
+                              }}
+                            >
+                              301-302
+                            </p>
                           </div>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-[16px] font-bold text-white mb-1">Unit Grid</h3>
-                          <p className="text-[12px] text-[#7C8992]">301-302</p>
-                        </div>
-                        <div className="mt-4">
-                          <p className="text-[12px] text-[#B197FC]">0 Unit Objekt Collected</p>
+                        <div className="mt-auto" style={{ transform: `translateY(${gridCardCollectedY}px)` }}>
+                          <p 
+                            className="text-[#B197FC]"
+                            style={{ 
+                              fontWeight: gridCardCollectedWeight,
+                              fontSize: `${gridCardCollectedSize}px`
+                            }}
+                          >
+                            0 Unit Objekt Collected
+                          </p>
                         </div>
                       </div>
                     </div>
+
+                    {/* Grid Debug Menu */}
+                    <div className="fixed top-4 right-4 z-[100] bg-black/20 p-4 rounded-xl border border-white/20 text-white text-[10px] w-[180px] max-h-[70vh] overflow-y-auto custom-scrollbar">
+                      <h2 className="text-[12px] font-bold mb-4 border-bottom border-white/20 pb-2">Grid Debug</h2>
+                      
+                      <div className="space-y-4">
+                        <DebugControl label="Header Gap" value={gridPageHeaderGap} onChange={setGridPageHeaderGap} />
+                        <DebugControl label="Completed Text Weight" value={gridCompletedTextWeight} onChange={setGridCompletedTextWeight} step={100} />
+                        <DebugControl label="Completed Text Size" value={gridCompletedTextSize} onChange={setGridCompletedTextSize} />
+                        <DebugControl label="Completed Counter Gap" value={gridCompletedCounterGap} onChange={setGridCompletedCounterGap} />
+                        <DebugControl label="Counter Weight" value={gridCounterWeight} onChange={setGridCounterWeight} step={100} />
+                        <DebugControl label="Counter Size" value={gridCounterSize} onChange={setGridCounterSize} />
+                        <DebugControl label="Counter Line Gap" value={gridCounterLineGap} onChange={setGridCounterLineGap} />
+                        <DebugControl label="Line Season Gap" value={gridLineSeasonGap} onChange={setGridLineSeasonGap} />
+                        <DebugControl label="Season Card Gap" value={gridSeasonCardGap} onChange={setGridSeasonCardGap} />
+                        <DebugControl label="Card Height" value={gridCardHeight} onChange={setGridCardHeight} />
+                        <DebugControl label="Card Corner Radius" value={gridCardCornerRadius} onChange={setGridCardCornerRadius} />
+                        <DebugControl label="Card Title Weight" value={gridCardTitleWeight} onChange={setGridCardTitleWeight} step={100} />
+                        <DebugControl label="Card Title Size" value={gridCardTitleSize} onChange={setGridCardTitleSize} />
+                        <DebugControl label="Card Type Weight" value={gridCardTypeWeight} onChange={setGridCardTypeWeight} step={100} />
+                        <DebugControl label="Card Type Size" value={gridCardTypeSize} onChange={setGridCardTypeSize} />
+                        <DebugControl label="Card Collected Weight" value={gridCardCollectedWeight} onChange={setGridCardCollectedWeight} step={100} />
+                        <DebugControl label="Card Collected Size" value={gridCardCollectedSize} onChange={setGridCardCollectedSize} />
+                        <DebugControl label="Card Title Icon Gap" value={gridCardTitleIconGap} onChange={setGridCardTitleIconGap} />
+                        <DebugControl label="Card Title Type Gap" value={gridCardTitleTypeGap} onChange={setGridCardTitleTypeGap} />
+                        <DebugControl label="Card Collected Y" value={gridCardCollectedY} onChange={setGridCardCollectedY} />
+                        <DebugControl label="Card Text Group X" value={gridCardTextGroupX} onChange={setGridCardTextGroupX} />
+                        <DebugControl label="Card Chevron Size" value={gridCardChevronSize} onChange={setGridCardChevronSize} />
+                        <DebugControl label="Card Chevron X" value={gridCardChevronX} onChange={setGridCardChevronX} />
+                        <DebugControl label="Card Chevron Y" value={gridCardChevronY} onChange={setGridCardChevronY} />
+                        <DebugControl label="Season Filter Height" value={gridSeasonFilterHeight} onChange={setGridSeasonFilterHeight} />
+                        <DebugControl label="Season Filter Title Size" value={gridSeasonFilterTitleSize} onChange={setGridSeasonFilterTitleSize} />
+                        <DebugControl label="Season Filter Title Weight" value={gridSeasonFilterTitleWeight} onChange={setGridSeasonFilterTitleWeight} step={100} />
+                      </div>
+                    </div>
+
+                    {/* Grid Season Filter Modal */}
+                    <AnimatePresence>
+                      {isGridSeasonFilterOpen && (
+                        <>
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsGridSeasonFilterOpen(false)}
+                            className="fixed inset-0 bg-black/60 z-[100]"
+                          />
+                          <motion.div 
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed bottom-0 left-0 right-0 bg-[#232A30] rounded-t-[24px] z-[101] flex flex-col overflow-hidden"
+                            style={{ height: `${gridSeasonFilterHeight}px` }}
+                          >
+                            <div className="flex justify-center py-3">
+                              <div className="w-12 h-1.5 bg-[#49565E] rounded-full" />
+                            </div>
+                            <div className="px-6 py-4 flex flex-col h-full">
+                              <div className="flex justify-between items-center mb-8">
+                                <h2 
+                                  className="text-white"
+                                  style={{ 
+                                    fontSize: `${gridSeasonFilterTitleSize}px`,
+                                    fontWeight: gridSeasonFilterTitleWeight
+                                  }}
+                                >
+                                  Season
+                                </h2>
+                              </div>
+                              
+                              <div className="flex flex-1 relative">
+                                {/* Left Column: Season Names */}
+                                <div className="flex-1 space-y-3" style={{ paddingLeft: '0px', paddingRight: '12px' }}>
+                                  {SEASON_NAMES.map((name) => {
+                                    const isAvailable = !!AVAILABLE_SEASONS[name];
+                                    const isSelected = selectedGridSeasonName === name;
+                                    
+                                    return (
+                                      <button
+                                        key={name}
+                                        disabled={!isAvailable}
+                                        onClick={() => {
+                                          setSelectedGridSeasonName(name);
+                                          if (AVAILABLE_SEASONS[name]) {
+                                            setTempGridSeason(`${name}${AVAILABLE_SEASONS[name][0]}`);
+                                          }
+                                        }}
+                                        className={cn(
+                                          "w-full transition-all text-left",
+                                          isSelected 
+                                            ? "bg-[#FAFAFA] border-[#4C555C] text-[#24292D]" 
+                                            : isAvailable 
+                                              ? "bg-[#2A333A] border-[#4A545D] text-[#D0D7DD]"
+                                              : "bg-[#1A1F23] border-[#2B343B] text-[#4A545D] cursor-not-allowed"
+                                        )}
+                                        style={{ 
+                                          borderRadius: '12px',
+                                          borderWidth: '1.3px',
+                                          paddingTop: '4px',
+                                          paddingBottom: '4px',
+                                          paddingLeft: '13px',
+                                          fontSize: '13px',
+                                          fontWeight: 500,
+                                          height: '30px'
+                                        }}
+                                      >
+                                        {name}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+
+                                {/* Vertical Divisor */}
+                                <div className="w-[1px] h-full bg-[#2B343B] absolute left-1/2 top-0" />
+
+                                {/* Right Column: Season Numbers */}
+                                <div className="flex-1 space-y-3" style={{ paddingLeft: '12px', paddingRight: '0px' }}>
+                                  {selectedGridSeasonName && AVAILABLE_SEASONS[selectedGridSeasonName]?.map((num) => {
+                                    const fullSeason = `${selectedGridSeasonName}${num}`;
+                                    const isSelected = tempGridSeason === fullSeason;
+                                    
+                                    return (
+                                      <button
+                                        key={num}
+                                        onClick={() => setTempGridSeason(fullSeason)}
+                                        className={cn(
+                                          "w-full transition-all text-left",
+                                          isSelected 
+                                            ? "bg-[#FAFAFA] border-[#4C555C] text-[#24292D]" 
+                                            : "bg-[#2A333A] border-[#4A545D] text-[#D0D7DD]"
+                                        )}
+                                        style={{ 
+                                          borderRadius: '12px',
+                                          borderWidth: '1.3px',
+                                          paddingTop: '4px',
+                                          paddingBottom: '4px',
+                                          paddingLeft: '13px',
+                                          fontSize: '13px',
+                                          fontWeight: 500,
+                                          height: '30px'
+                                        }}
+                                      >
+                                        {num}
+                                      </button>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+
+                              <div className="mt-auto pt-6 pb-8">
+                                <button 
+                                  onClick={() => setIsGridSeasonFilterOpen(false)}
+                                  className="w-full py-4 bg-[#6E2CFF] text-[#FBFBFB]"
+                                  style={{ 
+                                    borderRadius: '12px',
+                                    fontSize: '15px',
+                                    fontWeight: 600
+                                  }}
+                                >
+                                  Apply
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        </>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 )}
 
@@ -742,87 +1081,76 @@ export default function App() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="flex flex-col min-h-screen pt-4 px-4 pb-32"
+                    className="flex flex-col min-h-screen px-4 pb-32 relative"
+                    style={{ paddingTop: `${playPageHeaderGap}px` }}
                   >
-                    <h1 className="text-[20px] font-bold text-white mb-6">Enjoy Your Objekt</h1>
+                    <h1 
+                      className="font-semibold text-white"
+                      style={{ fontSize: `${playPageTitleSize}px`, marginBottom: `${playPageTitleCardGap}px` }}
+                    >
+                      Enjoy Your Objekt
+                    </h1>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      {/* Play Card 1 - Proof Shot */}
-                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden group">
-                        <img 
-                          src="https://picsum.photos/seed/proofshot/400/600" 
-                          alt="Proof Shot" 
-                          className="absolute inset-0 w-full h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                        <div className="absolute inset-0 bg-black/40" />
-                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                          <div className="flex justify-between items-end">
-                            <div>
-                              <h3 className="text-[16px] font-bold text-white mb-1">Proof Shot</h3>
-                              <p className="text-[11px] text-white/80 leading-tight pr-4">Take a photo with your favorite</p>
+                    <div className="grid grid-cols-2" style={{ columnGap: `${playCardHorizontalGap}px`, rowGap: `${playCardVerticalGap}px` }}>
+                      {[
+                        { id: 'proofshot', title: 'Proof Shot', desc: 'Take a photo with your favorite', seed: 'proofshot' },
+                        { id: 'lenticular', title: 'Lenticular', desc: 'Combine into a New Set', seed: 'lenticular' },
+                        { id: 'spin', title: 'Spin', desc: 'Random Draw', seed: 'spin' },
+                        { id: 'deco', title: 'Toploader Deco', desc: 'Customize it to your style', seed: 'deco' }
+                      ].map((card) => (
+                        <div 
+                          key={card.id}
+                          className="relative aspect-[3/4] overflow-hidden border-[1.3px] border-[#232A30] mx-auto group"
+                          style={{ 
+                            borderRadius: `${playCardCornerRadius}px`,
+                            width: `calc(100% + ${playCardWidthOffset}px)`,
+                            height: `calc(100% + ${playCardHeightOffset}px)`
+                          }}
+                        >
+                          <img 
+                            src={`https://picsum.photos/seed/${card.seed}/400/600`} 
+                            alt={card.title} 
+                            className="absolute inset-0 w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                          <div 
+                            className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent pointer-events-none" 
+                            style={{ 
+                              height: `${playCardGradientHeight}%`,
+                              opacity: playCardGradientOpacity
+                            }}
+                          />
+                          <div 
+                            className="absolute inset-0 p-4 flex flex-col justify-end"
+                            style={{ transform: `translate(${playCardTextGroupX}px, ${playCardTextGroupY}px)` }}
+                          >
+                            <div className="flex justify-between items-end">
+                              <div style={{ gap: `${playCardTitleDescGap}px`, display: 'flex', flexDirection: 'column' }}>
+                                <h3 
+                                  className="font-semibold text-white leading-none"
+                                  style={{ fontSize: `${playCardTitleSize}px` }}
+                                >
+                                  {card.title}
+                                </h3>
+                                <p 
+                                  className="text-[#ADB8BE] pr-4"
+                                  style={{ 
+                                    fontSize: `${playCardDescSize}px`, 
+                                    lineHeight: playCardDescLineGap 
+                                  }}
+                                >
+                                  {card.desc}
+                                </p>
+                              </div>
+                              <ChevronRightIcon 
+                                size={playCardChevronSize} 
+                                className="mb-1"
+                                fill="#ADB8BE"
+                              />
                             </div>
-                            <ChevronRight size={16} className="text-white mb-1" />
                           </div>
                         </div>
-                      </div>
-
-                      {/* Play Card 2 - Lenticular */}
-                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden bg-[#171C20] border border-[#2A3338]">
-                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                          <div className="flex justify-between items-end">
-                            <div>
-                              <h3 className="text-[16px] font-bold text-white mb-1">Lenticular</h3>
-                              <p className="text-[11px] text-[#7C8992] leading-tight pr-4">Combine into a New Set</p>
-                            </div>
-                            <ChevronRight size={16} className="text-[#7C8992] mb-1" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Play Card 3 - Spin */}
-                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden bg-[#0D1114] border border-[#2A3338]">
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="relative w-3/4 aspect-[2/3] bg-[#171C20] rounded-lg shadow-2xl rotate-[-5deg] overflow-hidden">
-                             <img 
-                              src="https://picsum.photos/seed/spin/200/300" 
-                              alt="Spin" 
-                              className="w-full h-full object-cover opacity-50"
-                              referrerPolicy="no-referrer"
-                            />
-                          </div>
-                          <div className="absolute w-1/2 h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12" />
-                        </div>
-                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                          <div className="flex justify-between items-end">
-                            <div>
-                              <h3 className="text-[16px] font-bold text-white mb-1">Spin</h3>
-                              <p className="text-[11px] text-[#7C8992] leading-tight pr-4">Random Draw</p>
-                            </div>
-                            <ChevronRight size={16} className="text-[#7C8992] mb-1" />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Play Card 4 - Toploader Deco */}
-                      <div className="relative aspect-[3/4] rounded-[20px] overflow-hidden group">
-                        <img 
-                          src="https://picsum.photos/seed/deco/400/600" 
-                          alt="Toploader Deco" 
-                          className="absolute inset-0 w-full h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                        <div className="absolute inset-0 bg-black/30" />
-                        <div className="absolute inset-0 p-4 flex flex-col justify-end">
-                          <div className="flex justify-between items-end">
-                            <div>
-                              <h3 className="text-[16px] font-bold text-white mb-1">Toploader Deco</h3>
-                              <p className="text-[11px] text-white/80 leading-tight pr-4">Customize it to your style</p>
-                            </div>
-                            <ChevronRight size={16} className="text-white mb-1" />
-                          </div>
-                        </div>
-                      </div>
+                      ))}
                     </div>
                   </motion.div>
                 )}
@@ -845,7 +1173,7 @@ export default function App() {
                 <h2 className="text-[15px] font-semibold text-[#FBFBFB]">
                   {inventory.find(o => o.id === selectedUnifiedObjektId)?.Type}
                 </h2>
-                <Pin size={20} className="text-[#FBFBFB]" />
+                <PinIcon size={20} className="text-[#FBFBFB]" />
               </div>
               
               <div className="px-4 pt-1 pb-4 overflow-y-auto flex-1 custom-scrollbar">
@@ -1168,10 +1496,10 @@ export default function App() {
       {activeTab !== 'shop' && activeTab !== 'pack-detail' && (
         <nav 
           className={cn(
-            "fixed bottom-0 left-0 right-0 z-40 bg-[#171C20] border-t-[1.3px] border-[#2A3338] flex items-center",
+            "fixed bottom-0 left-0 right-0 z-40 bg-[#171C20] border-t-[1.3px] border-[#2A333A] flex items-center",
             (activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') ? "pl-4 pr-0" : "px-4"
           )}
-          style={{ height: `${footerHeight}px` }}
+          style={{ height: '62px' }}
         >
           <div className={cn(
             "mx-auto flex justify-between items-center h-full",
@@ -1181,7 +1509,7 @@ export default function App() {
               <div className="flex w-full items-center h-full relative">
                 {/* Previous Page Part */}
                 <div className="w-[100px] pr-4 flex justify-center items-center h-full relative">
-                  <div style={{ transform: `translateX(${footerPart1Offset}px)` }}>
+                  <div style={{ transform: 'translateX(-6px)' }}>
                     <NavButton 
                       active={false} 
                       onClick={() => setActiveTab(previousTab)}
@@ -1193,15 +1521,15 @@ export default function App() {
                         <HomeIcon active={false} />
                       }
                       label={previousTab.charAt(0).toUpperCase() + previousTab.slice(1)}
-                      textSize={tabTextSize}
-                      iconSize={previousTab === 'rekord' ? iconSize + 3 : iconSize}
-                      gap={tabIconGap}
+                      textSize={12}
+                      iconSize={previousTab === 'rekord' ? 19 + 3 : 19}
+                      gap={2}
                     />
                   </div>
                   {/* Vertical Divider */}
                   <div 
-                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[1.3px] bg-[#2A3338]"
-                    style={{ height: `${dividerHeight}px` }}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[1.3px] bg-[#2A333A]"
+                    style={{ height: '40px' }}
                   />
                 </div>
                 
@@ -1209,7 +1537,7 @@ export default function App() {
                 <div className="flex-1 flex justify-center items-center h-full">
                   <div 
                     className="flex justify-around w-full"
-                    style={{ marginLeft: `${footerPart2Padding}px`, marginRight: `${footerPart2Padding}px` }}
+                    style={{ marginLeft: '12px', marginRight: '12px' }}
                   >
                     <NavButton 
                       active={activeTab === 'collect'} 
@@ -1217,27 +1545,27 @@ export default function App() {
                       layoutId="collect"
                       icon={<CollectIcon active={activeTab === 'collect'} />}
                       label="Collect"
-                      textSize={tabTextSize}
-                      iconSize={iconSize}
-                      gap={tabIconGap}
+                      textSize={12}
+                      iconSize={19}
+                      gap={2}
                     />
                     <NavButton 
                       active={activeTab === 'grid'} 
                       onClick={() => setActiveTab('grid')}
                       icon={<GridIcon active={activeTab === 'grid'} />}
                       label="Grid"
-                      textSize={tabTextSize}
-                      iconSize={iconSize}
-                      gap={tabIconGap}
+                      textSize={12}
+                      iconSize={19}
+                      gap={2}
                     />
                     <NavButton 
                       active={activeTab === 'play'} 
                       onClick={() => setActiveTab('play')}
                       icon={<PlayIcon active={activeTab === 'play'} />}
                       label="Play"
-                      textSize={tabTextSize}
-                      iconSize={iconSize}
-                      gap={tabIconGap}
+                      textSize={12}
+                      iconSize={19}
+                      gap={2}
                     />
                   </div>
                 </div>
@@ -1245,7 +1573,7 @@ export default function App() {
             ) : (
               <div 
                 className="flex w-full justify-between items-center h-full"
-                style={{ gap: `${defaultFooterSpacing}px` }}
+                style={{ gap: '12px' }}
               >
                 <NavButton 
                   active={activeTab === 'home'} 
@@ -1255,9 +1583,9 @@ export default function App() {
                   }}
                   icon={<HomeIcon active={activeTab === 'home'} />}
                   label="Home"
-                  textSize={tabTextSize}
-                  iconSize={iconSize}
-                  gap={tabIconGap}
+                  textSize={12}
+                  iconSize={19}
+                  gap={2}
                 />
                 <NavButton 
                   active={activeTab === 'rekord'} 
@@ -1267,9 +1595,9 @@ export default function App() {
                   }}
                   icon={<RekordIcon active={activeTab === 'rekord'} />}
                   label="Rekord"
-                  textSize={tabTextSize}
-                  iconSize={iconSize + 3}
-                  gap={tabIconGap}
+                  textSize={12}
+                  iconSize={19 + 3}
+                  gap={2}
                 />
                 <NavButton 
                   active={activeTab === 'collect'} 
@@ -1280,9 +1608,9 @@ export default function App() {
                   layoutId="collect"
                   icon={<CollectIcon active={activeTab === 'collect'} />}
                   label="Collect"
-                  textSize={tabTextSize}
-                  iconSize={iconSize}
-                  gap={tabIconGap}
+                  textSize={12}
+                  iconSize={19}
+                  gap={2}
                 />
                 <NavButton 
                   active={activeTab === 'room'} 
@@ -1292,9 +1620,9 @@ export default function App() {
                   }}
                   icon={<RoomIcon active={activeTab === 'room'} />}
                   label="Room"
-                  textSize={tabTextSize}
-                  iconSize={iconSize}
-                  gap={tabIconGap}
+                  textSize={12}
+                  iconSize={19}
+                  gap={2}
                 />
                 <NavButton 
                   active={activeTab === 'profile'} 
@@ -1304,9 +1632,9 @@ export default function App() {
                   }}
                   icon={<ProfileIcon active={activeTab === 'profile'} />}
                   label="Profile"
-                  textSize={tabTextSize}
-                  iconSize={iconSize}
-                  gap={tabIconGap}
+                  textSize={12}
+                  iconSize={19}
+                  gap={2}
                 />
               </div>
             )}
@@ -1334,7 +1662,7 @@ export default function App() {
         selectedOnlineStatus={selectedOnlineStatus}
         selectedSeason={selectedSeason}
         initialTab={initialFilterTab}
-        height={filterModalHeight}
+        height={60}
         onApply={(artists, types, onlineStatus, season) => {
           setSelectedArtists(artists);
           setSelectedTypes(types);
@@ -1380,111 +1708,6 @@ export default function App() {
             onClose={() => setSelectedObjektForDetail(null)} 
             showBorder={activeFilters.includes('Objekt number')}
           />
-        )}
-      </AnimatePresence>
-
-      {/* Debug Menu */}
-      <AnimatePresence>
-        {isDebugOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, x: '-50%' }}
-            animate={{ opacity: 1, y: 0, x: '-50%' }}
-            exit={{ opacity: 0, y: -20, x: '-50%' }}
-            className="fixed top-4 left-1/2 z-[100] bg-[#171C20] border border-[#2A3338] rounded-xl p-4 shadow-2xl w-[280px]"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-white font-bold text-sm">Debug Menu</h3>
-              <button onClick={() => setIsDebugOpen(false)} className="text-[#7C8992] hover:text-white">
-                <X size={18} />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Footer Height (px)</label>
-                <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setFooterHeight(footerHeight - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
-                  <input 
-                    type="number" 
-                    value={footerHeight} 
-                    onChange={(e) => setFooterHeight(parseInt(e.target.value) || 0)}
-                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
-                  />
-                  <button onClick={() => setFooterHeight(footerHeight + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Tab Text Size (px)</label>
-                <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setTabTextSize(tabTextSize - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
-                  <input 
-                    type="number" 
-                    value={tabTextSize} 
-                    onChange={(e) => setTabTextSize(parseInt(e.target.value) || 0)}
-                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
-                  />
-                  <button onClick={() => setTabTextSize(tabTextSize + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Icon Size (px)</label>
-                <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setIconSize(iconSize - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
-                  <input 
-                    type="number" 
-                    value={iconSize} 
-                    onChange={(e) => setIconSize(parseInt(e.target.value) || 0)}
-                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
-                  />
-                  <button onClick={() => setIconSize(iconSize + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Default Footer Spacing (px)</label>
-                <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setDefaultFooterSpacing(defaultFooterSpacing - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
-                  <input 
-                    type="number" 
-                    value={defaultFooterSpacing} 
-                    onChange={(e) => setDefaultFooterSpacing(parseInt(e.target.value) || 0)}
-                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
-                  />
-                  <button onClick={() => setDefaultFooterSpacing(defaultFooterSpacing + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Divider Height (px)</label>
-                <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setDividerHeight(dividerHeight - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
-                  <input 
-                    type="number" 
-                    value={dividerHeight} 
-                    onChange={(e) => setDividerHeight(parseInt(e.target.value) || 0)}
-                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
-                  />
-                  <button onClick={() => setDividerHeight(dividerHeight + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[11px] text-[#7C8992] uppercase font-bold tracking-wider">Tab Icon Gap (px)</label>
-                <div className="flex items-center justify-center gap-2">
-                  <button onClick={() => setTabIconGap(tabIconGap - 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">-</button>
-                  <input 
-                    type="number" 
-                    value={tabIconGap} 
-                    onChange={(e) => setTabIconGap(parseInt(e.target.value) || 0)}
-                    className="w-8 bg-black/20 border border-[#2A3338] rounded h-8 text-center text-white text-sm"
-                  />
-                  <button onClick={() => setTabIconGap(tabIconGap + 1)} className="w-24 h-8 bg-[#2A3338] rounded flex items-center justify-center text-white">+</button>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         )}
       </AnimatePresence>
     </div>
@@ -1643,6 +1866,35 @@ function HeroCarousel() {
             />
           ))}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function DebugControl({ label, value, onChange, step = 1 }: { label: string, value: number, onChange: (val: number) => void, step?: number }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-white/60">{label}</span>
+      <div className="flex items-center gap-2">
+        <button 
+          onClick={() => onChange(Number((value - step).toFixed(2)))}
+          className="w-8 h-8 flex items-center justify-center bg-white/10 rounded-lg hover:bg-white/20 active:scale-95 transition-all text-[14px] font-bold"
+        >
+          -
+        </button>
+        <input 
+          type="number" 
+          value={value} 
+          onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+          className="w-12 bg-transparent border border-white/20 rounded px-1 py-0.5 text-center focus:outline-none focus:border-white/40"
+          step={step}
+        />
+        <button 
+          onClick={() => onChange(Number((value + step).toFixed(2)))}
+          className="w-8 h-8 flex items-center justify-center bg-white/10 rounded-lg hover:bg-white/20 active:scale-95 transition-all text-[14px] font-bold"
+        >
+          +
+        </button>
       </div>
     </div>
   );
