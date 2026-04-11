@@ -42,34 +42,7 @@ export function GridDetailPage({
 }: GridDetailPageProps) {
   const dragControls = useDragControls();
   const [debug, setDebug] = useState({
-    headerBottomPadding: 13,
-    pageHeaderGap: 0,
-    artistNavTitleGap: 24,
-    titleSubtitleGap: 4,
-    subtitleGridGap: 40,
-    gridScale: 1.0,
-    gridGapX: 12,
-    gridGapY: 12,
-    titleSize: 22,
-    subtitleSize: 14,
-    titleWeight: 600,
-    subtitleWeight: 400,
-    slotCornerRadius: 12,
-    mainSlotBorderSize: 1.5,
-    centerSlotBorderSize: 2,
-    rewardTagX: 7,
-    rewardTagY: 8,
-    typeNumberSize: 16,
-    gradientSize: 50,
-    gradientDensity: 1.0,
-    fillOpacity: 1.0,
-    artistNavScale: 1.0,
-    counterTagScale: 1.0,
-    counterTagY: -4,
-    artistNameSize: 13,
-    artistNameGap: 8,
-    selectedArtistFillOpacity: 0.4,
-    counterTagKerning: 0,
+    emptySlotGradientOpacity: 1.0,
   });
 
   const updateDebug = (key: keyof typeof debug, delta: number) => {
@@ -78,6 +51,13 @@ export function GridDetailPage({
 
   const setDebugValue = (key: keyof typeof debug, value: number) => {
     setDebug(prev => ({ ...prev, [key]: value }));
+  };
+
+  const hexToRgba = (hex: string, opacity: number) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   };
 
   const seasonName = selectedSeason.match(/^([a-zA-Z]+)/)?.[1] || 'Spring';
@@ -177,34 +157,7 @@ export function GridDetailPage({
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 hide-scrollbar">
-          <DebugControl label="Header B-Padding" value={debug.headerBottomPadding} onChange={(v) => setDebugValue('headerBottomPadding', v)} onUpdate={(d) => updateDebug('headerBottomPadding', d)} />
-          <DebugControl label="Page Header Gap" value={debug.pageHeaderGap} onChange={(v) => setDebugValue('pageHeaderGap', v)} onUpdate={(d) => updateDebug('pageHeaderGap', d)} />
-          <DebugControl label="Artist Nav-Title Gap" value={debug.artistNavTitleGap} onChange={(v) => setDebugValue('artistNavTitleGap', v)} onUpdate={(d) => updateDebug('artistNavTitleGap', d)} />
-          <DebugControl label="Title-Subtitle Gap" value={debug.titleSubtitleGap} onChange={(v) => setDebugValue('titleSubtitleGap', v)} onUpdate={(d) => updateDebug('titleSubtitleGap', d)} />
-          <DebugControl label="Subtitle-Grid Gap" value={debug.subtitleGridGap} onChange={(v) => setDebugValue('subtitleGridGap', v)} onUpdate={(d) => updateDebug('subtitleGridGap', d)} />
-          <DebugControl label="Grid Scale" value={debug.gridScale} onChange={(v) => setDebugValue('gridScale', v)} onUpdate={(d) => updateDebug('gridScale', d)} step={0.1} />
-          <DebugControl label="Grid Gap X" value={debug.gridGapX} onChange={(v) => setDebugValue('gridGapX', v)} onUpdate={(d) => updateDebug('gridGapX', d)} />
-          <DebugControl label="Grid Gap Y" value={debug.gridGapY} onChange={(v) => setDebugValue('gridGapY', v)} onUpdate={(d) => updateDebug('gridGapY', d)} />
-          <DebugControl label="Title Size" value={debug.titleSize} onChange={(v) => setDebugValue('titleSize', v)} onUpdate={(d) => updateDebug('titleSize', d)} />
-          <DebugControl label="Subtitle Size" value={debug.subtitleSize} onChange={(v) => setDebugValue('subtitleSize', v)} onUpdate={(d) => updateDebug('subtitleSize', d)} />
-          <DebugControl label="Title Weight" value={debug.titleWeight} onChange={(v) => setDebugValue('titleWeight', v)} onUpdate={(d) => updateDebug('titleWeight', d)} step={100} />
-          <DebugControl label="Subtitle Weight" value={debug.subtitleWeight} onChange={(v) => setDebugValue('subtitleWeight', v)} onUpdate={(d) => updateDebug('subtitleWeight', d)} step={100} />
-          <DebugControl label="Slot Corner Radius" value={debug.slotCornerRadius} onChange={(v) => setDebugValue('slotCornerRadius', v)} onUpdate={(d) => updateDebug('slotCornerRadius', d)} />
-          <DebugControl label="Main Slot Border" value={debug.mainSlotBorderSize} onChange={(v) => setDebugValue('mainSlotBorderSize', v)} onUpdate={(d) => updateDebug('mainSlotBorderSize', d)} step={0.1} />
-          <DebugControl label="Center Slot Border" value={debug.centerSlotBorderSize} onChange={(v) => setDebugValue('centerSlotBorderSize', v)} onUpdate={(d) => updateDebug('centerSlotBorderSize', d)} step={0.1} />
-          <DebugControl label="Reward Tag X" value={debug.rewardTagX} onChange={(v) => setDebugValue('rewardTagX', v)} onUpdate={(d) => updateDebug('rewardTagX', d)} />
-          <DebugControl label="Reward Tag Y" value={debug.rewardTagY} onChange={(v) => setDebugValue('rewardTagY', v)} onUpdate={(d) => updateDebug('rewardTagY', d)} />
-          <DebugControl label="Type Number Size" value={debug.typeNumberSize} onChange={(v) => setDebugValue('typeNumberSize', v)} onUpdate={(d) => updateDebug('typeNumberSize', d)} />
-          <DebugControl label="Gradient Size" value={debug.gradientSize} onChange={(v) => setDebugValue('gradientSize', v)} onUpdate={(d) => updateDebug('gradientSize', d)} />
-          <DebugControl label="Gradient Density" value={debug.gradientDensity} onChange={(v) => setDebugValue('gradientDensity', v)} onUpdate={(d) => updateDebug('gradientDensity', d)} step={0.1} />
-          <DebugControl label="Fill Opacity" value={debug.fillOpacity} onChange={(v) => setDebugValue('fillOpacity', v)} onUpdate={(d) => updateDebug('fillOpacity', d)} step={0.1} />
-          <DebugControl label="Artist Nav Scale" value={debug.artistNavScale} onChange={(v) => setDebugValue('artistNavScale', v)} onUpdate={(d) => updateDebug('artistNavScale', d)} step={0.1} />
-          <DebugControl label="Counter Tag Scale" value={debug.counterTagScale} onChange={(v) => setDebugValue('counterTagScale', v)} onUpdate={(d) => updateDebug('counterTagScale', d)} step={0.1} />
-          <DebugControl label="Counter Tag Y" value={debug.counterTagY} onChange={(v) => setDebugValue('counterTagY', v)} onUpdate={(d) => updateDebug('counterTagY', d)} />
-          <DebugControl label="Artist Name Size" value={debug.artistNameSize} onChange={(v) => setDebugValue('artistNameSize', v)} onUpdate={(d) => updateDebug('artistNameSize', d)} />
-          <DebugControl label="Artist Name Gap" value={debug.artistNameGap} onChange={(v) => setDebugValue('artistNameGap', v)} onUpdate={(d) => updateDebug('artistNameGap', d)} />
-          <DebugControl label="Selected Fill Opacity" value={debug.selectedArtistFillOpacity} onChange={(v) => setDebugValue('selectedArtistFillOpacity', v)} onUpdate={(d) => updateDebug('selectedArtistFillOpacity', d)} step={0.1} />
-          <DebugControl label="Counter Kerning" value={debug.counterTagKerning} onChange={(v) => setDebugValue('counterTagKerning', v)} onUpdate={(d) => updateDebug('counterTagKerning', d)} step={0.001} />
+          <DebugControl label="Empty Slot Grad Opacity" value={debug.emptySlotGradientOpacity} onChange={(v) => setDebugValue('emptySlotGradientOpacity', v)} onUpdate={(d) => updateDebug('emptySlotGradientOpacity', d)} step={0.1} />
         </div>
       </motion.div>
 
@@ -213,7 +166,7 @@ export function GridDetailPage({
         className="sticky top-0 px-4 flex justify-between items-center z-30 bg-[#08090B]"
         style={{ 
           paddingTop: '13px',
-          paddingBottom: `${debug.headerBottomPadding}px`
+          paddingBottom: '0px'
         }}
       >
         <button onClick={onBack}>
@@ -235,11 +188,17 @@ export function GridDetailPage({
       </header>
 
       {/* Content Flow */}
-      <div className="flex flex-col items-center w-full" style={{ marginTop: `${debug.pageHeaderGap}px` }}>
+      <div className="flex flex-col items-center w-full" style={{ marginTop: '-10px' }}>
         {/* Artist Selector */}
         <div 
-          className="w-full px-4 py-6 overflow-x-auto hide-scrollbar flex items-center gap-6"
-          style={{ transform: `scale(${debug.artistNavScale})`, transformOrigin: 'top center' }}
+          className="w-full py-6 overflow-x-auto hide-scrollbar flex items-center"
+          style={{ 
+            transform: `scale(1.07)`, 
+            transformOrigin: 'top center',
+            gap: '24px',
+            paddingLeft: '32px',
+            paddingRight: '32px'
+          }}
         >
           {ARTISTS.map(artist => {
             const isSelected = artist.name === selectedArtist;
@@ -251,7 +210,7 @@ export function GridDetailPage({
                 key={artist.id}
                 onClick={() => setSelectedArtist(artist.name)}
                 className="flex flex-col items-center flex-shrink-0"
-                style={{ gap: `${debug.artistNameGap}px` }}
+                style={{ gap: isSelected ? '8px' : '9px' }}
               >
                 <div className="relative w-fit mx-auto">
                   <div 
@@ -262,8 +221,8 @@ export function GridDetailPage({
                         : "border-[1px] border-[#4A575F]"
                     )}
                     style={{
-                      width: isSelected ? '55px' : '50px',
-                      height: isSelected ? '55px' : '50px',
+                      width: isSelected ? `${50 * 1.1}px` : '50px',
+                      height: isSelected ? `${50 * 1.1}px` : '50px',
                     }}
                   >
                     <img 
@@ -275,14 +234,14 @@ export function GridDetailPage({
                     {isSelected && (
                       <div 
                         className="absolute inset-0 bg-[#6E2CFF] pointer-events-none" 
-                        style={{ opacity: debug.selectedArtistFillOpacity }}
+                        style={{ opacity: 0.25 }}
                       />
                     )}
                   </div>
                   {/* Tag Container - Ensures perfect horizontal centering */}
                   <div 
                     className="absolute inset-x-0 flex justify-center z-10"
-                    style={{ bottom: `${debug.counterTagY}px` }}
+                    style={{ bottom: '-8px' }}
                   >
                     <div 
                       className={cn(
@@ -292,8 +251,8 @@ export function GridDetailPage({
                           : "bg-[#242B31] border-[#343F45] text-[#ADB7C0] font-medium"
                       )}
                       style={{ 
-                        transform: `scale(${debug.counterTagScale})`,
-                        letterSpacing: `${debug.counterTagKerning}em`
+                        transform: `scale(0.85)`,
+                        letterSpacing: '0em'
                       }}
                     >
                       {completedCount}/8
@@ -305,7 +264,7 @@ export function GridDetailPage({
                     "font-medium transition-colors",
                     isSelected ? "text-[#FBFBFB]" : "text-[#7C8992]"
                   )}
-                  style={{ fontSize: `${debug.artistNameSize}px` }}
+                  style={{ fontSize: isSelected ? '10.5px' : '9.6px' }}
                 >
                   {artist.name}
                 </span>
@@ -318,15 +277,15 @@ export function GridDetailPage({
         <div 
           className="text-center" 
           style={{ 
-            marginTop: `${debug.artistNavTitleGap}px`,
-            marginBottom: `${debug.subtitleGridGap}px`
+            marginTop: '0px',
+            marginBottom: '40px'
           }}
         >
           <h2 
             className="text-white"
             style={{ 
-              fontSize: `${debug.titleSize}px`,
-              fontWeight: debug.titleWeight
+              fontSize: '21px',
+              fontWeight: 600
             }}
           >
             Attempting the <span className="text-[#B59DFF]">{getOrdinal(attemptCount)}</span> Grid
@@ -334,9 +293,9 @@ export function GridDetailPage({
           <p 
             className="text-[#7C8992]"
             style={{ 
-              marginTop: `${debug.titleSubtitleGap}px`,
-              fontSize: `${debug.subtitleSize}px`,
-              fontWeight: debug.subtitleWeight
+              marginTop: '14px',
+              fontSize: '12.2px',
+              fontWeight: 400
             }}
           >
             Collect Objekts and earn a special reward
@@ -346,11 +305,11 @@ export function GridDetailPage({
         {/* Grid */}
         <div 
           className="w-full px-6 flex justify-center pb-12"
-          style={{ transform: `scale(${debug.gridScale})`, transformOrigin: 'top center' }}
+          style={{ transform: `scale(0.90)`, transformOrigin: 'top center' }}
         >
           <div 
             className="grid grid-cols-3 w-full max-w-[340px]"
-            style={{ gap: `${debug.gridGapY}px ${debug.gridGapX}px` }}
+            style={{ gap: '10px 10px' }}
           >
             {/* 101-103 */}
             {[0, 1, 2].map(i => (
@@ -360,6 +319,7 @@ export function GridDetailPage({
                 objekt={gridObjekts[i]} 
                 seasonColor={seasonColor} 
                 debug={debug}
+                hexToRgba={hexToRgba}
               />
             ))}
             
@@ -369,6 +329,7 @@ export function GridDetailPage({
               objekt={gridObjekts[3]} 
               seasonColor={seasonColor} 
               debug={debug}
+              hexToRgba={hexToRgba}
             />
             
             <RewardSlot 
@@ -384,6 +345,7 @@ export function GridDetailPage({
               objekt={gridObjekts[4]} 
               seasonColor={seasonColor} 
               debug={debug}
+              hexToRgba={hexToRgba}
             />
             
             {/* 106-108 */}
@@ -394,6 +356,7 @@ export function GridDetailPage({
                 objekt={gridObjekts[i]} 
                 seasonColor={seasonColor} 
                 debug={debug}
+                hexToRgba={hexToRgba}
               />
             ))}
           </div>
@@ -436,24 +399,26 @@ interface GridSlotProps {
   objekt: Objekt | null;
   seasonColor: string;
   debug: any;
+  hexToRgba: (hex: string, opacity: number) => string;
 }
 
-const GridSlot: React.FC<GridSlotProps> = ({ type, objekt, seasonColor, debug }) => {
+const GridSlot: React.FC<GridSlotProps> = ({ type, objekt, seasonColor, debug, hexToRgba }) => {
+  const seasonColorRgba = hexToRgba(seasonColor, debug.emptySlotGradientOpacity);
+  
   return (
     <div 
       className="aspect-[1/1.5448] relative overflow-hidden"
       style={{ 
-        padding: `${debug.mainSlotBorderSize}px`,
-        borderRadius: `${debug.slotCornerRadius}px`,
-        background: `linear-gradient(to bottom, ${seasonColor}, #08090B ${debug.gradientSize}%, ${seasonColor})`
+        padding: '1px',
+        borderRadius: '10px',
+        background: `linear-gradient(to bottom, ${seasonColor}, #08090B 50%, ${seasonColor})`
       }}
     >
       <div 
         className="w-full h-full overflow-hidden relative"
         style={{ 
-          borderRadius: `${debug.slotCornerRadius - debug.mainSlotBorderSize}px`,
-          background: objekt ? 'transparent' : `linear-gradient(to bottom, #08090B, ${seasonColor}, #08090B)`,
-          opacity: debug.fillOpacity
+          borderRadius: '9px',
+          background: objekt ? 'transparent' : `linear-gradient(to bottom, #08090B, ${seasonColorRgba}, #08090B), #08090B`,
         }}
       >
         {objekt ? (
@@ -468,7 +433,7 @@ const GridSlot: React.FC<GridSlotProps> = ({ type, objekt, seasonColor, debug })
             <span 
               className="font-medium"
               style={{ 
-                fontSize: `${debug.typeNumberSize}px`,
+                fontSize: '16px',
                 background: 'linear-gradient(to bottom, #D6D6D6, #8B8B8B)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
@@ -505,8 +470,8 @@ const RewardSlot: React.FC<RewardSlotProps> = ({ isComplete, rewardPool, rewardI
           isComplete ? "cursor-pointer scale-105" : ""
         )}
         style={{ 
-          padding: `${debug.centerSlotBorderSize}px`,
-          borderRadius: `${debug.slotCornerRadius}px`,
+          padding: '2px',
+          borderRadius: '10px',
           background: 'linear-gradient(45deg, #9B1EFF, #BF91FE, #E6D6FD)'
         }}
         onClick={isComplete ? onClaim : undefined}
@@ -514,7 +479,7 @@ const RewardSlot: React.FC<RewardSlotProps> = ({ isComplete, rewardPool, rewardI
         <div 
           className="w-full h-full overflow-hidden relative"
           style={{
-            borderRadius: `${debug.slotCornerRadius - debug.centerSlotBorderSize}px`,
+            borderRadius: '8px',
             background: isComplete ? 'linear-gradient(to bottom, #6A2AF3, #221062)' : '#171C20'
           }}
         >
@@ -538,8 +503,8 @@ const RewardSlot: React.FC<RewardSlotProps> = ({ isComplete, rewardPool, rewardI
               <div 
                 className="absolute z-20 flex items-center justify-center"
                 style={{
-                  top: `${debug.rewardTagY}px`,
-                  left: `${debug.rewardTagX}px`,
+                  top: '2px',
+                  left: '2px',
                   backgroundColor: '#6E2DFD',
                   border: '1.3px solid #8B55FF',
                   borderRadius: '8px',
