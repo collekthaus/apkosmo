@@ -18,7 +18,7 @@ export const ARTISTS: Artist[] = [
   { id: 'eunsoo', name: 'EunSoo', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id16_황은수_140.jpg' },
 ];
 
-export const SEASONS = ['Atom01', 'Binary01', 'Cream01', 'Divine01'];
+export const SEASONS = ['Atom01', 'Binary01', 'Cream01', 'Divine01', 'Summer25', 'Spring26'];
 
 export const OBJEKT_POOL: Objekt[] = [
   { 
@@ -55,6 +55,102 @@ export const OBJEKT_POOL: Objekt[] = [
     imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/7add6769-c7d0-47ee-c542-b02abd1a9a00/original', 
     imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/ea2f86dc-493f-4062-35bc-199319d32c00/original',
     borderColor: '#619AFF',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-003', 
+    name: 'Summer25 HeeJu 103Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '103Z', 
+    Class: 'Basic', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/c1e75cbb-c27b-48d9-26a9-c21af3042e00/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/4bdac0b0-7272-4507-a564-13f7fd72aa00/original',
+    borderColor: '#619AFF',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-004', 
+    name: 'Summer25 HeeJu 104Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '104Z', 
+    Class: 'Basic', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/0881e9cb-2b1c-46d3-97ef-b4940cfd1e00/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/4bdac0b0-7272-4507-a564-13f7fd72aa00/original',
+    borderColor: '#619AFF',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-005', 
+    name: 'Summer25 HeeJu 105Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '105Z', 
+    Class: 'Basic', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/30cbb90a-2333-4e2c-b9d1-2360e2068c00/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/4bdac0b0-7272-4507-a564-13f7fd72aa00/original',
+    borderColor: '#619AFF',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-006', 
+    name: 'Summer25 HeeJu 106Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '106Z', 
+    Class: 'Basic', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/df2bf6ad-32e0-41d1-9b92-ae3c1f923000/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/4bdac0b0-7272-4507-a564-13f7fd72aa00/original',
+    borderColor: '#619AFF',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-007', 
+    name: 'Summer25 HeeJu 107Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '107Z', 
+    Class: 'Basic', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/d23fb079-a184-40df-82ac-13371913ba00/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/4bdac0b0-7272-4507-a564-13f7fd72aa00/original',
+    borderColor: '#619AFF',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-008', 
+    name: 'Summer25 HeeJu 108Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '108Z', 
+    Class: 'Basic', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/cc4e3405-7f7a-46a7-6a52-d9fc3da43e00/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/4bdac0b0-7272-4507-a564-13f7fd72aa00/original',
+    borderColor: '#619AFF',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-009', 
+    name: 'Summer25 HeeJu 301Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '301Z', 
+    Class: 'Special', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/73463893-edcc-4e28-9b3d-e590adc1b400/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/0b39f95c-2d0b-4973-0b43-98f90788bd00/original',
+    borderColor: '#F7F7F7',
+    textColor: '#000000'
+  },
+  { 
+    id: 'obj-010', 
+    name: 'Summer25 HeeJu 302Z', 
+    artist: 'HeeJu', 
+    Season: 'Summer25', 
+    Type: '302Z', 
+    Class: 'Special', 
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/63e7d19c-e84d-469b-909a-9f774eede000/original', 
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/0b39f95c-2d0b-4973-0b43-98f90788bd00/original',
+    borderColor: '#F7F7F7',
     textColor: '#000000'
   }
 ];
