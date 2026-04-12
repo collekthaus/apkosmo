@@ -31,30 +31,35 @@ export function UnitGridPage({
   onShop,
 }: UnitGridPageProps) {
   const [debug, setDebug] = useState({
-    inventoryHeaderHeight: 62,
-    seasonTagOpacity: 0.5,
-    seasonTagVPadding: 4,
-    seasonTagHPadding: 12,
-    seasonTagRadius: 8,
-    gridTitleSize: 24,
-    gridSlotBorderSize: 1.3,
-    gridSlotTypeTextSize: 18,
-    gridSlotTypeWeight: 500,
-    pairBorderSize: 1.3,
-    pairPadding: 8,
-    slotGap: 8,
-    pairGap: 16,
-    slotWidth: 80,
-    headerSeasonGap: 8,
-    seasonTitleGap: 16,
-    titleGridGap: 32,
-    gridInventoryGap: 32,
-    modalHeight: 78,
-    modalTitleSize: 18,
-    modalTitleWeight: 700,
+    inventoryHeight: 50,
   });
 
   const [showDebug, setShowDebug] = useState(true);
+
+  // Hardcoded values from user
+  const config = {
+    inventoryHeaderHeight: 50,
+    seasonTagOpacity: 0.2,
+    seasonTagVPadding: 4,
+    seasonTagHPadding: 8,
+    seasonTagRadius: 8,
+    gridTitleSize: 21,
+    gridSlotBorderSize: 1.3,
+    gridSlotTypeTextSize: 14.6,
+    gridSlotTypeWeight: 500,
+    pairBorderSize: 1.3,
+    pairPadding: 7,
+    slotGap: 8,
+    pairGap: 8,
+    slotWidth: 74,
+    headerSeasonGap: 9,
+    seasonTitleGap: 10,
+    titleGridGap: 16,
+    gridInventoryGap: 32, // Defaulting this as it wasn't in the fixed list but needed for layout
+    modalHeight: 76,
+    modalTitleSize: 18,
+    modalTitleWeight: 600,
+  };
 
   const [selectedSlots, setSelectedSlots] = useState<{
     member1_301: Objekt | null;
@@ -172,7 +177,7 @@ export function UnitGridPage({
       {/* Top Part */}
       <div 
         className="flex-1 flex flex-col overflow-y-auto hide-scrollbar"
-        style={{ paddingBottom: `${debug.gridInventoryGap}px` }}
+        style={{ paddingBottom: `${config.gridInventoryGap}px` }}
       >
         {/* Header */}
         <header className="px-4 py-4 flex items-center">
@@ -182,18 +187,18 @@ export function UnitGridPage({
         </header>
 
         {/* Season Tag */}
-        <div className="flex justify-center" style={{ marginTop: `${debug.headerSeasonGap}px` }}>
+        <div className="flex justify-center" style={{ marginTop: `${config.headerSeasonGap}px` }}>
           <div 
             style={{ 
-              backgroundColor: `${seasonColor}${Math.round(debug.seasonTagOpacity * 255).toString(16).padStart(2, '0')}`,
+              backgroundColor: `${seasonColor}${Math.round(config.seasonTagOpacity * 255).toString(16).padStart(2, '0')}`,
               color: seasonColor,
               fontWeight: 600,
               fontSize: '12px',
-              paddingTop: `${debug.seasonTagVPadding}px`,
-              paddingBottom: `${debug.seasonTagVPadding}px`,
-              paddingLeft: `${debug.seasonTagHPadding}px`,
-              paddingRight: `${debug.seasonTagHPadding}px`,
-              borderRadius: `${debug.seasonTagRadius}px`
+              paddingTop: `${config.seasonTagVPadding}px`,
+              paddingBottom: `${config.seasonTagVPadding}px`,
+              paddingLeft: `${config.seasonTagHPadding}px`,
+              paddingRight: `${config.seasonTagHPadding}px`,
+              borderRadius: `${config.seasonTagRadius}px`
             }}
           >
             {selectedSeason}
@@ -204,36 +209,36 @@ export function UnitGridPage({
         <h1 
           className="text-center text-[#FBFBFB] font-semibold"
           style={{ 
-            marginTop: `${debug.seasonTitleGap}px`, 
-            marginBottom: `${debug.titleGridGap}px`,
-            fontSize: `${debug.gridTitleSize}px`
+            marginTop: `${config.seasonTitleGap}px`, 
+            marginBottom: `${config.titleGridGap}px`,
+            fontSize: `${config.gridTitleSize}px`
           }}
         >
           {member1} & {member2}
         </h1>
 
         {/* Grid Slots */}
-        <div className="flex justify-center" style={{ gap: `${debug.pairGap}px` }}>
+        <div className="flex justify-center" style={{ gap: `${config.pairGap}px` }}>
           {/* Pair 1 */}
           <div 
             className="flex rounded-[12px] border-[#232A30]"
             style={{ 
-              gap: `${debug.slotGap}px`, 
-              padding: `${debug.pairPadding}px`,
-              borderWidth: `${debug.pairBorderSize}px`
+              gap: `${config.slotGap}px`, 
+              padding: `${config.pairPadding}px`,
+              borderWidth: `${config.pairBorderSize}px`
             }}
           >
             <UnitSlot 
               type="301" 
               objekt={selectedSlots.member1_301} 
               onRemove={() => handleRemoveObjekt('member1_301')} 
-              debug={debug}
+              config={config}
             />
             <UnitSlot 
               type="302" 
               objekt={selectedSlots.member1_302} 
               onRemove={() => handleRemoveObjekt('member1_302')} 
-              debug={debug}
+              config={config}
             />
           </div>
 
@@ -241,33 +246,36 @@ export function UnitGridPage({
           <div 
             className="flex rounded-[12px] border-[#232A30]"
             style={{ 
-              gap: `${debug.slotGap}px`, 
-              padding: `${debug.pairPadding}px`,
-              borderWidth: `${debug.pairBorderSize}px`
+              gap: `${config.slotGap}px`, 
+              padding: `${config.pairPadding}px`,
+              borderWidth: `${config.pairBorderSize}px`
             }}
           >
             <UnitSlot 
               type="301" 
               objekt={selectedSlots.member2_301} 
               onRemove={() => handleRemoveObjekt('member2_301')} 
-              debug={debug}
+              config={config}
             />
             <UnitSlot 
               type="302" 
               objekt={selectedSlots.member2_302} 
               onRemove={() => handleRemoveObjekt('member2_302')} 
-              debug={debug}
+              config={config}
             />
           </div>
         </div>
       </div>
 
       {/* Bottom Part */}
-      <div className="h-[50%] bg-[#171C20] flex flex-col">
+      <div 
+        className="bg-[#171C20] flex flex-col"
+        style={{ height: `${debug.inventoryHeight}%` }}
+      >
         {/* Filters */}
         <div 
           className="px-4 flex items-center gap-[10px]"
-          style={{ height: `${debug.inventoryHeaderHeight}px` }}
+          style={{ height: `${config.inventoryHeaderHeight}px` }}
         >
           {(activeFilters.length > 0 || selectedArtists.length > 0) && (
             <button 
@@ -346,27 +354,7 @@ export function UnitGridPage({
       {/* Debug Menu */}
       {showDebug && (
         <div className="fixed bottom-4 left-4 right-4 z-[100] bg-black/30 p-4 rounded-2xl flex gap-4 overflow-x-auto no-scrollbar pointer-events-auto">
-          <DebugControl label="Inv Header Height" value={debug.inventoryHeaderHeight} onChange={(v: number) => updateDebug('inventoryHeaderHeight', v)} />
-          <DebugControl label="Season Tag Opacity" value={debug.seasonTagOpacity} onChange={(v: number) => updateDebug('seasonTagOpacity', v)} />
-          <DebugControl label="Season Tag V-Pad" value={debug.seasonTagVPadding} onChange={(v: number) => updateDebug('seasonTagVPadding', v)} />
-          <DebugControl label="Season Tag H-Pad" value={debug.seasonTagHPadding} onChange={(v: number) => updateDebug('seasonTagHPadding', v)} />
-          <DebugControl label="Season Tag Radius" value={debug.seasonTagRadius} onChange={(v: number) => updateDebug('seasonTagRadius', v)} />
-          <DebugControl label="Grid Title Size" value={debug.gridTitleSize} onChange={(v: number) => updateDebug('gridTitleSize', v)} />
-          <DebugControl label="Slot Border Size" value={debug.gridSlotBorderSize} onChange={(v: number) => updateDebug('gridSlotBorderSize', v)} />
-          <DebugControl label="Slot Type Size" value={debug.gridSlotTypeTextSize} onChange={(v: number) => updateDebug('gridSlotTypeTextSize', v)} />
-          <DebugControl label="Slot Type Weight" value={debug.gridSlotTypeWeight} onChange={(v: number) => updateDebug('gridSlotTypeWeight', v)} isWeight />
-          <DebugControl label="Pair Border Size" value={debug.pairBorderSize} onChange={(v: number) => updateDebug('pairBorderSize', v)} />
-          <DebugControl label="Pair Padding" value={debug.pairPadding} onChange={(v: number) => updateDebug('pairPadding', v)} />
-          <DebugControl label="Slot Gap" value={debug.slotGap} onChange={(v: number) => updateDebug('slotGap', v)} />
-          <DebugControl label="Pair Gap" value={debug.pairGap} onChange={(v: number) => updateDebug('pairGap', v)} />
-          <DebugControl label="Slot Width" value={debug.slotWidth} onChange={(v: number) => updateDebug('slotWidth', v)} />
-          <DebugControl label="Header-Season Gap" value={debug.headerSeasonGap} onChange={(v: number) => updateDebug('headerSeasonGap', v)} />
-          <DebugControl label="Season-Title Gap" value={debug.seasonTitleGap} onChange={(v: number) => updateDebug('seasonTitleGap', v)} />
-          <DebugControl label="Title-Grid Gap" value={debug.titleGridGap} onChange={(v: number) => updateDebug('titleGridGap', v)} />
-          <DebugControl label="Grid-Inv Gap" value={debug.gridInventoryGap} onChange={(v: number) => updateDebug('gridInventoryGap', v)} />
-          <DebugControl label="Modal Height" value={debug.modalHeight} onChange={(v: number) => updateDebug('modalHeight', v)} />
-          <DebugControl label="Modal Title Size" value={debug.modalTitleSize} onChange={(v: number) => updateDebug('modalTitleSize', v)} />
-          <DebugControl label="Modal Title Weight" value={debug.modalTitleWeight} onChange={(v: number) => updateDebug('modalTitleWeight', v)} isWeight />
+          <DebugControl label="Objekt Inventory Height" value={debug.inventoryHeight} onChange={(v: number) => updateDebug('inventoryHeight', v)} />
         </div>
       )}
 
@@ -383,9 +371,9 @@ export function UnitGridPage({
         }}
         initialTab="Artist"
         simpleMode={true}
-        height={debug.modalHeight}
-        titleSize={debug.modalTitleSize}
-        titleWeight={debug.modalTitleWeight}
+        height={config.modalHeight}
+        titleSize={config.modalTitleSize}
+        titleWeight={config.modalTitleWeight}
       />
     </div>
   );
@@ -423,16 +411,16 @@ interface UnitSlotProps {
   type: string;
   objekt: Objekt | null;
   onRemove: () => void;
-  debug: any;
+  config: any;
 }
 
-const UnitSlot: React.FC<UnitSlotProps> = ({ type, objekt, onRemove, debug }) => {
+const UnitSlot: React.FC<UnitSlotProps> = ({ type, objekt, onRemove, config }) => {
   return (
     <div 
       className="aspect-[1/1.5448] bg-[#171C20] border-[#232A30] rounded-[8px] relative flex items-center justify-center overflow-hidden"
       style={{ 
-        width: `${debug.slotWidth}px`,
-        borderWidth: `${debug.gridSlotBorderSize}px`
+        width: `${config.slotWidth}px`,
+        borderWidth: `${config.gridSlotBorderSize}px`
       }}
     >
       {objekt ? (
@@ -457,8 +445,8 @@ const UnitSlot: React.FC<UnitSlotProps> = ({ type, objekt, onRemove, debug }) =>
         <span 
           className="text-[#49565E]"
           style={{ 
-            fontSize: `${debug.gridSlotTypeTextSize}px`,
-            fontWeight: debug.gridSlotTypeWeight
+            fontSize: `${config.gridSlotTypeTextSize}px`,
+            fontWeight: config.gridSlotTypeWeight
           }}
         >
           {type}
