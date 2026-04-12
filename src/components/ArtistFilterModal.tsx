@@ -15,6 +15,8 @@ interface ArtistFilterModalProps {
   initialTab?: 'Artist' | 'Season' | 'Type' | 'On/Offline' | 'Other';
   height?: number;
   simpleMode?: boolean;
+  titleSize?: number;
+  titleWeight?: number;
 }
 
 const OBJEKT_CLASSES = ['Basic', 'Event', 'Motion', 'Special', 'Unit', 'ETC'];
@@ -57,7 +59,9 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
   onApply,
   initialTab = 'Artist',
   height = 78,
-  simpleMode = false
+  simpleMode = false,
+  titleSize = 18,
+  titleWeight = 700
 }) => {
   const [tempArtists, setTempArtists] = useState<string[]>(initialArtists);
   const [tempTypes, setTempTypes] = useState<string[]>(initialTypes);
@@ -240,7 +244,15 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
               </div>
             ) : (
               <div className="px-6 pt-4 pb-2 flex justify-start">
-                <h2 className="text-[#FBFBFB] text-[18px] font-bold">Artist</h2>
+                <h2 
+                  className="text-[#FBFBFB]"
+                  style={{ 
+                    fontSize: `${titleSize}px`,
+                    fontWeight: titleWeight
+                  }}
+                >
+                  Artist
+                </h2>
               </div>
             )}
 
@@ -566,10 +578,10 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
               <div className="p-4 flex gap-3">
                 <button
                   onClick={handleClear}
-                  disabled={tempArtists.length === 0 && tempTypes.length === 0 && tempOnlineStatus.length === 0 && !tempSeason}
+                  disabled={simpleMode ? tempArtists.length === 0 : (tempArtists.length === 0 && tempTypes.length === 0 && tempOnlineStatus.length === 0 && !tempSeason)}
                   className={cn(
                     "flex-1 py-4 transition-colors",
-                    (tempArtists.length === 0 && tempTypes.length === 0 && tempOnlineStatus.length === 0 && !tempSeason)
+                    (simpleMode ? tempArtists.length === 0 : (tempArtists.length === 0 && tempTypes.length === 0 && tempOnlineStatus.length === 0 && !tempSeason))
                       ? "bg-[#2A333A] text-[#48555D] cursor-not-allowed" 
                       : "bg-[#343F45] text-[#E8ECEF]"
                   )}
