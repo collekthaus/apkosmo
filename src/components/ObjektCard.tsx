@@ -156,10 +156,19 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
               referrerPolicy="no-referrer"
             />
           )}
+          {/* Unit Overlay */}
+          {objekt.Class === 'Unit' && (
+            <img 
+              src="https://resources.cosmo.fans/images/collection-band/2025/08/14/06/raw/e0e4fdd950bc4ca8ba49a98b053756f620250814065358420.png"
+              alt="Unit Overlay"
+              className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
+              referrerPolicy="no-referrer"
+            />
+          )}
           <div 
             className="absolute flex flex-col items-center justify-between pointer-events-none z-20"
             style={{ 
-              backgroundColor: objekt.Class === 'Special' ? 'transparent' : objekt.borderColor,
+              backgroundColor: (objekt.Class === 'Special' || objekt.Class === 'Unit') ? 'transparent' : objekt.borderColor,
               width: `${values.borderWidth}%`,
               height: `${values.borderHeight}%`,
               right: `${values.borderX}%`,

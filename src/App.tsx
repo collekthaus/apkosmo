@@ -23,7 +23,7 @@ import {
   X
 } from 'lucide-react';
 import { Objekt, Pack, UserStats } from './types';
-import { PACKS, OBJEKT_POOL } from './constants';
+import { PACKS, OBJEKT_POOL, ARTISTS } from './constants';
 import { ObjektCard } from './components/ObjektCard';
 import { PackOpening } from './components/PackOpening';
 import { cn } from './lib/utils';
@@ -46,6 +46,7 @@ import { DetailedObjektView } from './components/DetailedObjektView';
 import { ArtistFilterModal } from './components/ArtistFilterModal';
 import { GridDetailPage } from './components/GridDetailPage';
 import { UnitGridPage } from './components/UnitGridPage';
+import { UnitGridCompletePage } from './components/UnitGridCompletePage';
 
 const getAvailableSeasons = () => {
   const seasons = Array.from(new Set(OBJEKT_POOL.map(o => o.Season)));
@@ -71,7 +72,7 @@ const getAvailableSeasons = () => {
 const AVAILABLE_SEASONS = getAvailableSeasons();
 const SEASON_NAMES = ['Spring', 'Summer', 'Autumn', 'Winter'];
 
-type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail' | 'grid' | 'play' | 'grid-detail' | 'unit-grid';
+type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail' | 'grid' | 'play' | 'grid-detail' | 'unit-grid' | 'unit-grid-complete';
 
 const HERO_IMAGES = [
   {
@@ -136,6 +137,12 @@ export default function App() {
   const [selectedGridSeasonName, setSelectedGridSeasonName] = useState<string | null>("Spring");
   const [selectedGridArtist, setSelectedGridArtist] = useState<string | null>(null);
   const [gridHistory, setGridHistory] = useState<Record<string, number>>({}); // "Artist-Season" -> count
+  const [completedUnitGrids, setCompletedUnitGrids] = useState<Record<string, number>>({}); // "UnitKey" -> count
+  const [unitGridCompleteData, setUnitGridCompleteData] = useState<{
+    unitObjekt: Objekt;
+    usedObjekts: Objekt[];
+    season: string;
+  } | null>(null);
 
   const toggleFilter = (filter: string) => {
     if (filter === 'Artist' || filter === 'Type' || filter === 'On/Offline' || filter === 'Season' || filter === 'Other') {
@@ -388,6 +395,73 @@ export default function App() {
     setOpeningPack(null);
   };
 
+  const handleCombine = (slots: {
+    member1_301: Objekt | null;
+    member1_302: Objekt | null;
+    member2_301: Objekt | null;
+    member2_302: Objekt | null;
+  }) => {
+    if (!slots.member1_301 || !slots.member1_302 || !slots.member2_301 || !slots.member2_302) return;
+
+    const usedObjekts = [slots.member1_301, slots.member1_302, slots.member2_301, slots.member2_302];
+    const season = slots.member1_301.Season;
+    
+    // Get member IDs
+    const getArtistId = (name: string) => ARTISTS.find(a => a.name === name)?.id || name;
+    const idA = getArtistId(slots.member1_301.artist);
+    const idB = getArtistId(slots.member2_301.artist);
+    
+    // Sort IDs to ensure consistent key
+    const ids = [idA, idB].sort((a, b) => {
+      const numA = parseInt(a.replace('id', ''));
+      const numB = parseInt(b.replace('id', ''));
+      return numA - numB;
+    });
+    const unitKey = `${ids[0]} X ${ids[1]}`;
+    
+    // Find matching Unit Objekt in pool
+    const unitTemplate = OBJEKT_POOL.find(o => 
+      o.Class === 'Unit' && 
+      o.Season === season && 
+      o.artist === unitKey
+    );
+
+    if (!unitTemplate) {
+      alert("Unit Objekt not found for this combination!");
+      return;
+    }
+
+    // Update completion count
+    const newCount = (completedUnitGrids[unitKey] || 0) + 1;
+    setCompletedUnitGrids(prev => ({ ...prev, [unitKey]: newCount }));
+
+    // Remove used objekts and add unit objekt
+    // We need to be careful to remove specific instances
+    const usedInstances = usedObjekts.map(o => ({ id: o.id, serial: o.serialNumber }));
+    
+    let newInventory = [...inventory];
+    usedInstances.forEach(instance => {
+      const index = newInventory.findIndex(o => o.id === instance.id && o.serialNumber === instance.serial);
+      if (index !== -1) {
+        newInventory.splice(index, 1);
+      }
+    });
+    
+    const newUnitObjekt: Objekt = {
+      ...unitTemplate,
+      serialNumber: newCount,
+      obtainedAt: new Date().toISOString()
+    };
+
+    setInventory([newUnitObjekt, ...newInventory]);
+    setUnitGridCompleteData({
+      unitObjekt: newUnitObjekt,
+      usedObjekts,
+      season
+    });
+    setActiveTab('unit-grid-complete');
+  };
+
   return (
     <div className="min-h-screen bg-[#08090B] text-[#D0D7DD] pb-24">
       {/* Header */}
@@ -535,6 +609,18 @@ export default function App() {
               selectedSeason={selectedGridSeason}
               onBack={() => setActiveTab('grid')}
               onShop={() => setActiveTab('shop')}
+              onCombine={handleCombine}
+            />
+          )}
+
+          {activeTab === 'unit-grid-complete' && unitGridCompleteData && (
+            <UnitGridCompletePage 
+              unitObjekt={unitGridCompleteData.unitObjekt}
+              usedObjekts={unitGridCompleteData.usedObjekts}
+              season={unitGridCompleteData.season}
+              completionCount={completedUnitGrids[unitGridCompleteData.unitObjekt.artist] || 1}
+              onDoOver={() => setActiveTab('unit-grid')}
+              onContinue={() => setActiveTab('collect')}
             />
           )}
 

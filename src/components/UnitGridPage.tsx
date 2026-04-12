@@ -14,6 +14,12 @@ interface UnitGridPageProps {
   selectedSeason: string;
   onBack: () => void;
   onShop: () => void;
+  onCombine: (slots: {
+    member1_301: Objekt | null;
+    member1_302: Objekt | null;
+    member2_301: Objekt | null;
+    member2_302: Objekt | null;
+  }) => void;
 }
 
 const SEASON_COLORS: Record<string, string> = {
@@ -29,16 +35,12 @@ export function UnitGridPage({
   selectedSeason,
   onBack,
   onShop,
+  onCombine,
 }: UnitGridPageProps) {
-  const [debug, setDebug] = useState({
-    inventoryHeight: 50,
-  });
-
-  const [showDebug, setShowDebug] = useState(true);
-
   // Hardcoded values from user
   const config = {
-    inventoryHeaderHeight: 50,
+    inventoryHeight: 58,
+    inventoryHeaderHeight: 51,
     seasonTagOpacity: 0.2,
     seasonTagVPadding: 4,
     seasonTagHPadding: 8,
@@ -55,7 +57,7 @@ export function UnitGridPage({
     headerSeasonGap: 9,
     seasonTitleGap: 10,
     titleGridGap: 16,
-    gridInventoryGap: 32, // Defaulting this as it wasn't in the fixed list but needed for layout
+    gridInventoryGap: 32,
     modalHeight: 76,
     modalTitleSize: 18,
     modalTitleWeight: 600,
@@ -100,6 +102,13 @@ export function UnitGridPage({
 
   const member1 = selectedSlots.member1_301?.artist || selectedSlots.member1_302?.artist || 'Member 1';
   const member2 = selectedSlots.member2_301?.artist || selectedSlots.member2_302?.artist || 'Member 2';
+
+  const isComplete = !!(
+    selectedSlots.member1_301 &&
+    selectedSlots.member1_302 &&
+    selectedSlots.member2_301 &&
+    selectedSlots.member2_302
+  );
 
   const handleSelectObjekt = (objekt: Objekt) => {
     const isAlreadySelected = [
@@ -166,10 +175,6 @@ export function UnitGridPage({
   const resetFilters = () => {
     setActiveFilters([]);
     setSelectedArtists([]);
-  };
-
-  const updateDebug = (key: keyof typeof debug, val: number) => {
-    setDebug(prev => ({ ...prev, [key]: val }));
   };
 
   return (
@@ -270,7 +275,7 @@ export function UnitGridPage({
       {/* Bottom Part */}
       <div 
         className="bg-[#171C20] flex flex-col"
-        style={{ height: `${debug.inventoryHeight}%` }}
+        style={{ height: `${config.inventoryHeight}%` }}
       >
         {/* Filters */}
         <div 
@@ -322,7 +327,7 @@ export function UnitGridPage({
         </div>
 
         {/* Inventory List */}
-        <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
+        <div className={cn("flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar transition-all duration-300", isComplete && "opacity-50 pointer-events-none")}>
           <div className="grid grid-cols-3 gap-2">
             {filteredObjekts.map((objekt, idx) => {
               const isSelected = [
@@ -351,13 +356,6 @@ export function UnitGridPage({
         </div>
       </div>
 
-      {/* Debug Menu */}
-      {showDebug && (
-        <div className="fixed bottom-4 left-4 right-4 z-[100] bg-black/30 p-4 rounded-2xl flex gap-4 overflow-x-auto no-scrollbar pointer-events-auto">
-          <DebugControl label="Objekt Inventory Height" value={debug.inventoryHeight} onChange={(v: number) => updateDebug('inventoryHeight', v)} />
-        </div>
-      )}
-
       {/* Artist Filter Modal */}
       <ArtistFilterModal 
         isOpen={isArtistFilterOpen}
@@ -375,37 +373,28 @@ export function UnitGridPage({
         titleSize={config.modalTitleSize}
         titleWeight={config.modalTitleWeight}
       />
+
+      {/* Combine Button */}
+      <AnimatePresence>
+        {isComplete && (
+          <motion.div 
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="absolute bottom-0 left-0 right-0 p-4 z-50"
+          >
+            <button
+              onClick={() => onCombine(selectedSlots)}
+              className="w-full h-[52px] bg-[#6F2CFE] text-[#FBFBFB] rounded-[12px] font-bold text-[18px] shadow-lg shadow-[#6F2CFE]/20"
+            >
+              Combine
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
-
-const DebugControl = ({ label, value, onChange, isWeight = false }: any) => (
-  <div className="flex flex-col bg-black/40 p-3 rounded-xl min-w-[140px] border border-white/10">
-    <div className="flex justify-between items-start mb-2">
-      <span className="text-[10px] text-white/50 uppercase font-bold leading-tight">{label}</span>
-      <input 
-        type="number" 
-        value={value} 
-        onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-        className="bg-transparent text-white text-[14px] font-mono w-12 text-right focus:outline-none"
-      />
-    </div>
-    <div className="flex gap-1">
-      <button 
-        onClick={() => onChange(value - (isWeight ? 100 : 1))}
-        className="flex-1 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center text-white text-xl transition-colors"
-      >
-        -
-      </button>
-      <button 
-        onClick={() => onChange(value + (isWeight ? 100 : 1))}
-        className="flex-1 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center text-white text-xl transition-colors"
-      >
-        +
-      </button>
-    </div>
-  </div>
-);
 
 interface UnitSlotProps {
   type: string;

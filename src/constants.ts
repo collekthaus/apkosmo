@@ -1,21 +1,21 @@
 import { Artist, Objekt, Pack } from "./types";
 
 export const ARTISTS: Artist[] = [
-  { id: 'dohun', name: 'DoHun', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-도훈.jpg' },
-  { id: 'heeju', name: 'HeeJu', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-희주.jpg' },
-  { id: 'taein', name: 'TaeIn', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-태인.jpg' },
-  { id: 'jaeyoung', name: 'JaeYoung', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-재영.jpg' },
-  { id: 'juho', name: 'JuHo', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-주호.jpg' },
-  { id: 'jiwoon', name: 'JiWoon', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-지운.jpg' },
-  { id: 'hwanhee', name: 'HwanHee', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-환희.jpg' },
-  { id: 'cheongmyeong', name: 'CheongMyeong', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id9_이청명_140.jpg' },
-  { id: 'towa', name: 'Towa', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id10_토와_140.jpg' },
-  { id: 'kyuhyuk', name: 'KyuHyuk', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id11_이규혁_140.jpg' },
-  { id: 'nuri', name: 'NuRi', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id12_박누리_140.jpg' },
-  { id: 'seongjun', name: 'SeongJun', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id13_김성준_140.jpg' },
-  { id: 'yejoon', name: 'YeJoon', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id14_한예준_140.jpg' },
-  { id: 'gyeongbeen', name: 'GyeongBeen', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id15_최경빈_140.jpg' },
-  { id: 'eunsoo', name: 'EunSoo', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id16_황은수_140.jpg' },
+  { id: 'id1', name: 'DoHun', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-도훈.jpg' },
+  { id: 'id2', name: 'HeeJu', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-희주.jpg' },
+  { id: 'id4', name: 'TaeIn', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-태인.jpg' },
+  { id: 'id5', name: 'JaeYoung', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-재영.jpg' },
+  { id: 'id6', name: 'JuHo', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-주호.jpg' },
+  { id: 'id7', name: 'JiWoon', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-지운.jpg' },
+  { id: 'id8', name: 'HwanHee', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-환희.jpg' },
+  { id: 'id9', name: 'CheongMyeong', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id9_이청명_140.jpg' },
+  { id: 'id10', name: 'Towa', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id10_토와_140.jpg' },
+  { id: 'id11', name: 'KyuHyuk', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id11_이규혁_140.jpg' },
+  { id: 'id12', name: 'NuRi', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id12_박누리_140.jpg' },
+  { id: 'id13', name: 'SeongJun', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id13_김성준_140.jpg' },
+  { id: 'id14', name: 'YeJoon', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id14_한예준_140.jpg' },
+  { id: 'id15', name: 'GyeongBeen', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id15_최경빈_140.jpg' },
+  { id: 'id16', name: 'EunSoo', group: 'tripleS', imageUrl: 'https://static.cosmo.fans/uploads/member-profile/idntt-id16_황은수_140.jpg' },
 ];
 
 export const SEASONS = ['Atom01', 'Binary01', 'Cream01', 'Divine01', 'Summer25', 'Spring26'];
@@ -1966,6 +1966,30 @@ export const OBJEKT_POOL: Objekt[] = [
     imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/3fb845f3-169a-4938-c6c3-07e7a074fd00/original', 
     imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/c3178679-3c71-4b06-a77c-b74abd63f900/original',
     borderColor: '#F7F7F7',
+    textColor: '#000000'
+  },
+  {
+    id: 'obj-unit-1',
+    name: 'Spring26 id2 X id10 401Z',
+    artist: 'id2 X id10',
+    Season: 'Spring26',
+    Type: '401Z',
+    Class: 'Unit',
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/65da3917-6657-4cd3-99d1-ad9cfa775a00/original',
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/a842c8c8-2efc-498e-366d-2b17cea9bd00/original',
+    borderColor: '#E6E3E8',
+    textColor: '#000000'
+  },
+  {
+    id: 'obj-unit-2',
+    name: 'Spring26 id13 X id14 401Z',
+    artist: 'id13 X id14',
+    Season: 'Spring26',
+    Type: '401Z',
+    Class: 'Unit',
+    imageUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/6eec70b4-f697-4b87-dfa0-10f9d9facd00/original',
+    imageBackUrl: 'https://imagedelivery.net/qQuMkbHJ-0s6rwu8vup_5w/79382036-77a4-4127-eecc-a44c43333300/original',
+    borderColor: '#E6E3E8',
     textColor: '#000000'
   }
 ];
