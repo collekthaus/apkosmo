@@ -12,6 +12,7 @@ interface ObjektCardProps {
   showBorder?: boolean;
   count?: number;
   serialTag?: string;
+  hideTags?: boolean;
 }
 
 export const ObjektCard: React.FC<ObjektCardProps> = ({ 
@@ -21,7 +22,8 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
   showDetails = true,
   showBorder = false,
   count,
-  serialTag
+  serialTag,
+  hideTags = false
 }) => {
   const [isNew, setIsNew] = React.useState(false);
 
@@ -79,7 +81,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
       />
 
       {/* New Tag */}
-      {isNew && (
+      {isNew && !hideTags && (
         <div 
           className="absolute z-30 flex items-center justify-center font-['Pretendard']"
           style={{
@@ -101,7 +103,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
       )}
 
       {/* Count Tag - Bottom Left */}
-      {count && count > 1 && (
+      {count && count > 1 && !hideTags && (
         <div 
           className="absolute z-30 flex items-center justify-center font-['Pretendard']"
           style={{
@@ -123,7 +125,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
       )}
 
       {/* Serial Tag - Bottom Left */}
-      {serialTag && (
+      {serialTag && !hideTags && (
         <div 
           className="absolute z-30 flex items-center justify-center font-['Pretendard']"
           style={{

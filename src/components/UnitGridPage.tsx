@@ -274,9 +274,14 @@ export function UnitGridPage({
 
       {/* Bottom Part */}
       <div 
-        className="bg-[#171C20] flex flex-col"
+        className="bg-[#171C20] flex flex-col relative"
         style={{ height: `${config.inventoryHeight}%` }}
       >
+        {/* Dark Overlay when complete */}
+        {isComplete && (
+          <div className="absolute inset-0 bg-black opacity-[0.6] z-40 pointer-events-none" />
+        )}
+
         {/* Filters */}
         <div 
           className="px-4 flex items-center gap-[10px]"
@@ -327,7 +332,7 @@ export function UnitGridPage({
         </div>
 
         {/* Inventory List */}
-        <div className={cn("flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar transition-all duration-300", isComplete && "opacity-50 pointer-events-none")}>
+        <div className={cn("flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar transition-all duration-300", isComplete && "pointer-events-none")}>
           <div className="grid grid-cols-3 gap-2">
             {filteredObjekts.map((objekt, idx) => {
               const isSelected = [
@@ -385,7 +390,7 @@ export function UnitGridPage({
           >
             <button
               onClick={() => onCombine(selectedSlots)}
-              className="w-full h-[52px] bg-[#6F2CFE] text-[#FBFBFB] rounded-[12px] font-bold text-[18px] shadow-lg shadow-[#6F2CFE]/20"
+              className="w-full h-[52px] bg-[#6F2CFE] text-[#FBFBFB] rounded-[12px] font-semibold text-[16px] shadow-lg shadow-[#6F2CFE]/20"
             >
               Combine
             </button>
