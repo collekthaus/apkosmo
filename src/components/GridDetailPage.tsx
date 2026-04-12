@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useDragControls } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, ShoppingCart, Star, Plus, Minus } from 'lucide-react';
 import { ARTISTS, OBJEKT_POOL } from '../constants';
 import { Objekt, UserStats } from '../types';
@@ -40,19 +40,6 @@ export function GridDetailPage({
   onBack,
   onShop,
 }: GridDetailPageProps) {
-  const dragControls = useDragControls();
-  const [debug, setDebug] = useState({
-    emptySlotGradientOpacity: 1.0,
-  });
-
-  const updateDebug = (key: keyof typeof debug, delta: number) => {
-    setDebug(prev => ({ ...prev, [key]: Number((prev[key] + delta).toFixed(3)) }));
-  };
-
-  const setDebugValue = (key: keyof typeof debug, value: number) => {
-    setDebug(prev => ({ ...prev, [key]: value }));
-  };
-
   const hexToRgba = (hex: string, opacity: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
@@ -108,13 +95,20 @@ export function GridDetailPage({
     if (!reward) return;
 
     // Remove the 8 objekts used
-    const usedIds = gridObjekts.map(o => o!.id);
-    const newInventory = inventory.filter(o => !usedIds.includes(o.id));
+    const usedObjekts = gridObjekts.filter((o): o is Objekt => o !== null);
+    let newInventory = [...inventory];
+    usedObjekts.forEach(used => {
+      const index = newInventory.findIndex(o => o.id === used.id && o.serialNumber === used.serialNumber);
+      if (index !== -1) {
+        newInventory.splice(index, 1);
+      }
+    });
     
     // Add the reward
+    const existingCount = inventory.filter(o => o.id === reward.id).length;
     const newReward: Objekt = {
       ...reward,
-      serialNumber: Math.floor(Math.random() * 99999) + 1,
+      serialNumber: existingCount + 1,
       obtainedAt: new Date().toISOString(),
     };
     
@@ -140,27 +134,6 @@ export function GridDetailPage({
 
   return (
     <div className="fixed inset-0 z-50 bg-[#08090B] overflow-y-auto hide-scrollbar flex flex-col">
-      {/* Draggable Debug Menu */}
-      <motion.div 
-        drag
-        dragControls={dragControls}
-        dragListener={false}
-        dragMomentum={false}
-        className="fixed top-20 right-4 w-64 bg-black/30 z-[100] rounded-lg flex flex-col overflow-hidden"
-        style={{ height: '360px' }}
-      >
-        <div 
-          onPointerDown={(e) => dragControls.start(e)}
-          className="flex items-center justify-between p-4 border-b border-white/10 cursor-move bg-black/40"
-        >
-          <span className="text-[10px] font-bold text-white/50 uppercase">Debug Menu</span>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto p-4 hide-scrollbar">
-          <DebugControl label="Empty Slot Grad Opacity" value={debug.emptySlotGradientOpacity} onChange={(v) => setDebugValue('emptySlotGradientOpacity', v)} onUpdate={(d) => updateDebug('emptySlotGradientOpacity', d)} step={0.1} />
-        </div>
-      </motion.div>
-
       {/* Header - Sticky at top */}
       <header 
         className="sticky top-0 px-4 flex justify-between items-center z-30 bg-[#08090B]"
@@ -193,6 +166,7 @@ export function GridDetailPage({
         <div 
           className="w-full py-6 overflow-x-auto hide-scrollbar flex items-center"
           style={{ 
+            height: '130px',
             transform: `scale(1.07)`, 
             transformOrigin: 'top center',
             gap: '24px',
@@ -202,14 +176,22 @@ export function GridDetailPage({
         >
           {ARTISTS.map(artist => {
             const isSelected = artist.name === selectedArtist;
-            const artistGridKey = `${artist.name}-${selectedSeason}`;
-            const completedCount = gridHistory[artistGridKey] || 0;
+            
+            // Count unique basic types (101Z-108Z) owned for this artist and season
+            const basicTypesList = ['101Z', '102Z', '103Z', '104Z', '105Z', '106Z', '107Z', '108Z'];
+            const ownedCount = basicTypesList.filter(type => 
+              inventory.some(o => 
+                o.artist === artist.name && 
+                o.Season === selectedSeason && 
+                o.Type === type
+              )
+            ).length;
             
             return (
               <button 
                 key={artist.id}
                 onClick={() => setSelectedArtist(artist.name)}
-                className="flex flex-col items-center flex-shrink-0"
+                className="flex flex-col items-center flex-shrink-0 h-full justify-center"
                 style={{ gap: isSelected ? '8px' : '9px' }}
               >
                 <div className="relative w-fit mx-auto">
@@ -255,7 +237,7 @@ export function GridDetailPage({
                         letterSpacing: '0em'
                       }}
                     >
-                      {completedCount}/8
+                      {ownedCount}/8
                     </div>
                   </div>
                 </div>
@@ -308,9 +290,27 @@ export function GridDetailPage({
           style={{ transform: `scale(0.90)`, transformOrigin: 'top center' }}
         >
           <div 
-            className="grid grid-cols-3 w-full max-w-[340px]"
+            className="grid grid-cols-3 w-full max-w-[340px] relative"
             style={{ gap: '10px 10px' }}
           >
+            {/* Pulsing Background Image - On top of 8 slots, behind center slot */}
+            <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+              <motion.img 
+                src="/images/GridRewardGradientBg.png"
+                alt="Reward Background"
+                className="w-[120%] h-[120%] object-contain opacity-90"
+                animate={{ 
+                  scale: [0.62, 0.73, 0.62],
+                }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                referrerPolicy="no-referrer"
+              />
+            </div>
+
             {/* 101-103 */}
             {[0, 1, 2].map(i => (
               <GridSlot 
@@ -318,7 +318,6 @@ export function GridDetailPage({
                 type={basicTypes[i].replace('Z', '')} 
                 objekt={gridObjekts[i]} 
                 seasonColor={seasonColor} 
-                debug={debug}
                 hexToRgba={hexToRgba}
               />
             ))}
@@ -328,7 +327,6 @@ export function GridDetailPage({
               type={basicTypes[3].replace('Z', '')} 
               objekt={gridObjekts[3]} 
               seasonColor={seasonColor} 
-              debug={debug}
               hexToRgba={hexToRgba}
             />
             
@@ -337,14 +335,12 @@ export function GridDetailPage({
               rewardPool={rewardPool} 
               rewardIndex={rewardIndex} 
               onClaim={handleClaim}
-              debug={debug}
             />
             
             <GridSlot 
               type={basicTypes[4].replace('Z', '')} 
               objekt={gridObjekts[4]} 
               seasonColor={seasonColor} 
-              debug={debug}
               hexToRgba={hexToRgba}
             />
             
@@ -355,7 +351,6 @@ export function GridDetailPage({
                 type={basicTypes[i].replace('Z', '')} 
                 objekt={gridObjekts[i]} 
                 seasonColor={seasonColor} 
-                debug={debug}
                 hexToRgba={hexToRgba}
               />
             ))}
@@ -366,44 +361,15 @@ export function GridDetailPage({
   );
 }
 
-const DebugControl = ({ label, value, onChange, onUpdate, step = 1 }: { label: string, value: number, onChange: (val: number) => void, onUpdate: (delta: number) => void, step?: number }) => (
-  <div className="flex flex-col gap-1 mb-3">
-    <div className="flex justify-between items-center">
-      <span className="text-[10px] text-white/70 uppercase">{label}</span>
-      <input 
-        type="number" 
-        value={value} 
-        onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-        className="bg-transparent text-[10px] text-white font-mono text-right w-16 outline-none"
-      />
-    </div>
-    <div className="flex gap-2">
-      <button 
-        onClick={() => onUpdate(-step)}
-        className="flex-1 bg-white/10 hover:bg-white/20 py-1 rounded flex items-center justify-center h-8"
-      >
-        <Minus size={14} className="text-white" />
-      </button>
-      <button 
-        onClick={() => onUpdate(step)}
-        className="flex-1 bg-white/10 hover:bg-white/20 py-1 rounded flex items-center justify-center h-8"
-      >
-        <Plus size={14} className="text-white" />
-      </button>
-    </div>
-  </div>
-);
-
 interface GridSlotProps {
   type: string;
   objekt: Objekt | null;
   seasonColor: string;
-  debug: any;
   hexToRgba: (hex: string, opacity: number) => string;
 }
 
-const GridSlot: React.FC<GridSlotProps> = ({ type, objekt, seasonColor, debug, hexToRgba }) => {
-  const seasonColorRgba = hexToRgba(seasonColor, debug.emptySlotGradientOpacity);
+const GridSlot: React.FC<GridSlotProps> = ({ type, objekt, seasonColor, hexToRgba }) => {
+  const seasonColorRgba = hexToRgba(seasonColor, 0.15);
   
   return (
     <div 
@@ -453,31 +419,40 @@ interface RewardSlotProps {
   rewardPool: Objekt[];
   rewardIndex: number;
   onClaim: () => void;
-  debug: any;
 }
 
-const RewardSlot: React.FC<RewardSlotProps> = ({ isComplete, rewardPool, rewardIndex, onClaim, debug }) => {
+const RewardSlot: React.FC<RewardSlotProps> = ({ isComplete, rewardPool, rewardIndex, onClaim }) => {
   const currentReward = rewardPool[rewardIndex];
 
   return (
-    <div className="aspect-[1/1.5448] relative group">
-      {/* Glow Animation */}
-      <div className="absolute inset-0 bg-[#9B1EFF]/40 blur-2xl rounded-full animate-pulse" />
-      
+    <div className="aspect-[1/1.5448] relative group z-20">
       <div 
         className={cn(
           "absolute inset-0 overflow-hidden transition-all duration-500",
-          isComplete ? "cursor-pointer scale-105" : ""
+          isComplete ? "cursor-pointer" : ""
         )}
         style={{ 
           padding: '2px',
           borderRadius: '10px',
-          background: 'linear-gradient(45deg, #9B1EFF, #BF91FE, #E6D6FD)'
         }}
         onClick={isComplete ? onClaim : undefined}
       >
+        {/* Rotating Border Gradient */}
+        <motion.div 
+          className="absolute inset-[-100%]"
+          style={{
+            background: 'conic-gradient(from 0deg, #9B1EFF, #BF91FE, #E6D6FD, #9B1EFF)',
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ 
+            duration: 3, 
+            repeat: Infinity, 
+            ease: "linear" 
+          }}
+        />
+
         <div 
-          className="w-full h-full overflow-hidden relative"
+          className="w-full h-full overflow-hidden relative z-10"
           style={{
             borderRadius: '8px',
             background: isComplete ? 'linear-gradient(to bottom, #6A2AF3, #221062)' : '#171C20'
@@ -521,8 +496,13 @@ const RewardSlot: React.FC<RewardSlotProps> = ({ isComplete, rewardPool, rewardI
             </div>
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center gap-2 p-2 text-center">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <Star size={24} className="text-white fill-white" />
+              <div className="w-10 h-10 flex items-center justify-center">
+                <img 
+                  src="/images/TouchFinger.png" 
+                  alt="Claim" 
+                  className="w-full h-full object-contain"
+                  referrerPolicy="no-referrer"
+                />
               </div>
               <div>
                 <p className="text-white font-bold text-[14px] leading-tight">Claim</p>

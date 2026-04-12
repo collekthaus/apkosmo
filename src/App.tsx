@@ -45,6 +45,7 @@ import {
 import { DetailedObjektView } from './components/DetailedObjektView';
 import { ArtistFilterModal } from './components/ArtistFilterModal';
 import { GridDetailPage } from './components/GridDetailPage';
+import { UnitGridPage } from './components/UnitGridPage';
 
 const getAvailableSeasons = () => {
   const seasons = Array.from(new Set(OBJEKT_POOL.map(o => o.Season)));
@@ -70,7 +71,7 @@ const getAvailableSeasons = () => {
 const AVAILABLE_SEASONS = getAvailableSeasons();
 const SEASON_NAMES = ['Spring', 'Summer', 'Autumn', 'Winter'];
 
-type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail' | 'grid' | 'play' | 'grid-detail';
+type Tab = 'home' | 'rekord' | 'collect' | 'room' | 'profile' | 'shop' | 'pack-detail' | 'grid' | 'play' | 'grid-detail' | 'unit-grid';
 
 const HERO_IMAGES = [
   {
@@ -527,6 +528,16 @@ export default function App() {
             />
           )}
 
+          {activeTab === 'unit-grid' && (
+            <UnitGridPage 
+              inventory={inventory}
+              stats={stats}
+              selectedSeason={selectedGridSeason}
+              onBack={() => setActiveTab('grid')}
+              onShop={() => setActiveTab('shop')}
+            />
+          )}
+
           {(activeTab === 'collect' || activeTab === 'grid' || activeTab === 'play') && (
             <AnimatePresence mode="wait">
                 {activeTab === 'collect' && (
@@ -783,7 +794,7 @@ export default function App() {
                           }}
                         >
                           <img 
-                            src="/images/Grid.png" 
+                            src="/images/BasicGridIcon.png" 
                             alt="GRID" 
                             className="w-[40px] h-[40px] object-cover"
                             referrerPolicy="no-referrer"
@@ -824,7 +835,10 @@ export default function App() {
 
                       {/* Grid Card 2 */}
                       <div 
-                        className="bg-[#171C20] p-4 flex flex-col relative border-[1.3px] border-[#232A30]"
+                        onClick={() => {
+                          setActiveTab('unit-grid');
+                        }}
+                        className="bg-[#171C20] p-4 flex flex-col relative border-[1.3px] border-[#232A30] cursor-pointer"
                         style={{ 
                           height: '200px',
                           borderRadius: '12px'
@@ -847,7 +861,7 @@ export default function App() {
                           }}
                         >
                           <img 
-                            src="/images/Grid.png" 
+                            src="/images/UnitGridIcon.png" 
                             alt="UNIT" 
                             className="w-[40px] h-[40px] object-cover"
                             referrerPolicy="no-referrer"
@@ -1218,7 +1232,9 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-x-[15px] gap-y-[25px]">
                   {PACKS.map(pack => {
                     const representativeObjekt = OBJEKT_POOL.find(o => 
-                      o.Season === pack.season && pack.possibleClasses.includes(o.Class as any)
+                      o.Season === pack.season && 
+                      pack.possibleClasses.includes(o.Class as any) &&
+                      (!pack.artist || o.artist === pack.artist)
                     ) || OBJEKT_POOL[0];
 
                     return (
@@ -1328,7 +1344,9 @@ export default function App() {
                     {/* Objekt Card in the center */}
                     {(() => {
                       const representativeObjekt = OBJEKT_POOL.find(o => 
-                        o.Season === selectedPack.season && selectedPack.possibleClasses.includes(o.Class as any)
+                        o.Season === selectedPack.season && 
+                        selectedPack.possibleClasses.includes(o.Class as any) &&
+                        (!selectedPack.artist || o.artist === selectedPack.artist)
                       ) || OBJEKT_POOL[0];
                       return (
                         <>

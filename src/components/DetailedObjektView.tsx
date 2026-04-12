@@ -136,83 +136,94 @@ export const DetailedObjektView: React.FC<DetailedObjektViewProps> = ({ objekt, 
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
-              
+
               {/* Front Border */}
               {isFlashActive && (
-                <div 
-                  className="absolute flex flex-col items-center justify-between pointer-events-none"
-                  style={{ 
-                    backgroundColor: objekt.borderColor,
-                    width: `${borderValues.width}%`,
-                    height: `${borderValues.height}%`,
-                    right: `0%`,
-                    top: `50%`,
-                    transform: 'translateY(-50%)',
-                    borderRadius: '10px 0 0 10px',
-                  }}
-                >
-                  {/* Artist Name */}
+                <>
+                  {/* Special Overlay */}
+                  {objekt.Class === 'Special' && (
+                    <img 
+                      src="https://resources.cosmo.fans/images/collection-band/2025/08/14/06/raw/86207a80d354439cada0ec6c45e076ee20250814061643330.png"
+                      alt="Special Overlay"
+                      className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
+                      referrerPolicy="no-referrer"
+                    />
+                  )}
                   <div 
-                    className="absolute whitespace-nowrap font-bold"
-                    style={{
-                      top: '0.5%',
-                      left: '8%',
-                      transform: 'rotate(90deg) translateY(-50%)',
-                      transformOrigin: 'left center',
-                      textAlign: 'left',
-                      fontSize: '17px',
-                      color: objekt.textColor,
-                      letterSpacing: '0px',
-                      fontFamily: "'Inter', sans-serif"
+                    className="absolute flex flex-col items-center justify-between pointer-events-none overflow-hidden z-20"
+                    style={{ 
+                      backgroundColor: objekt.Class === 'Special' ? 'transparent' : objekt.borderColor,
+                      width: `${borderValues.width}%`,
+                      height: `${borderValues.height}%`,
+                      right: `0%`,
+                      top: `50%`,
+                      transform: 'translateY(-50%)',
+                      borderRadius: '10px 0 0 10px',
                     }}
                   >
-                    {objekt.artist}
-                  </div>
+                    {/* Artist Name */}
+                    <div 
+                      className="absolute whitespace-nowrap font-bold"
+                      style={{
+                        top: '0.5%',
+                        left: '8%',
+                        transform: 'rotate(90deg) translateY(-50%)',
+                        transformOrigin: 'left center',
+                        textAlign: 'left',
+                        fontSize: '17px',
+                        color: objekt.textColor,
+                        letterSpacing: '0px',
+                        fontFamily: "'Inter', sans-serif"
+                      }}
+                    >
+                      {objekt.artist}
+                    </div>
 
-                  {/* Logo */}
-                  <div 
-                    className="absolute flex items-center justify-center"
-                    style={{
-                      top: '91.5%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%) rotate(90deg)',
-                      width: '46px',
-                      height: '46px',
-                      color: objekt.textColor
-                    }}
-                  >
-                    <LogoIcon className="w-full h-full" />
-                  </div>
+                    {/* Logo */}
+                    <div 
+                      className="absolute flex items-center justify-center"
+                      style={{
+                        top: '91.5%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%) rotate(90deg)',
+                        width: '46px',
+                        height: '46px',
+                        color: objekt.textColor
+                      }}
+                    >
+                      <LogoIcon className="w-full h-full" />
+                    </div>
 
-                  {/* Type & Serial Group */}
-                  <div 
-                    className="absolute flex items-center whitespace-nowrap"
-                    style={{
-                      top: '50%',
-                      left: 'calc(50% - 1px)',
-                      transform: 'translate(-50%, -50%) rotate(90deg)',
-                      gap: '6px',
-                      color: objekt.textColor,
-                    }}
-                  >
-                    <span style={{ 
-                      fontSize: '16px', 
-                      letterSpacing: '0px',
-                      fontWeight: 700,
-                      fontFamily: "'Inter', sans-serif"
-                    }}>
-                      {objekt.Type}
-                    </span>
-                    <span style={{ 
-                      fontSize: '16px', 
-                      letterSpacing: '0px',
-                      fontFamily: "'DotMatrix', sans-serif",
-                      transform: 'translate(0px, 2px)'
-                    }}>
-                      #{String(objekt.serialNumber || 1).padStart(5, '0')}
-                    </span>
+                    {/* Type & Serial Group */}
+                    <div 
+                      className="absolute flex items-center whitespace-nowrap"
+                      style={{
+                        top: '50%',
+                        left: 'calc(50% - 1px)',
+                        transform: 'translate(-50%, -50%) rotate(90deg)',
+                        gap: '6px',
+                        color: objekt.textColor,
+                      }}
+                    >
+                      <span style={{ 
+                        fontSize: '16px', 
+                        letterSpacing: '0px',
+                        fontWeight: 700,
+                        fontFamily: "'Inter', sans-serif"
+                      }}>
+                        {objekt.Type}
+                      </span>
+                      <span style={{ 
+                        fontSize: '16px', 
+                        letterSpacing: '0px',
+                        fontFamily: "'DotMatrix', sans-serif",
+                        transform: 'translate(0px, 2px)'
+                      }}>
+                        #{String(objekt.serialNumber || 1).padStart(5, '0')}
+                      </span>
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
 

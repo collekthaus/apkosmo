@@ -14,6 +14,7 @@ interface ArtistFilterModalProps {
   onApply: (artists: string[], types: string[], onlineStatus: string[], season: string | null) => void;
   initialTab?: 'Artist' | 'Season' | 'Type' | 'On/Offline' | 'Other';
   height?: number;
+  simpleMode?: boolean;
 }
 
 const OBJEKT_CLASSES = ['Basic', 'Event', 'Motion', 'Special', 'Unit', 'ETC'];
@@ -55,7 +56,8 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
   selectedSeason: initialSeason,
   onApply,
   initialTab = 'Artist',
-  height = 78
+  height = 78,
+  simpleMode = false
 }) => {
   const [tempArtists, setTempArtists] = useState<string[]>(initialArtists);
   const [tempTypes, setTempTypes] = useState<string[]>(initialTypes);
@@ -164,77 +166,83 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
               <div className="w-12 h-1.5 bg-[#49565E] rounded-full" />
             </div>
 
-            {/* Tabs */}
-            <div className="relative px-4">
-              <div 
-                className="flex overflow-x-auto no-scrollbar border-b border-[#2B343B] justify-center"
-                style={{ gap: '28px' }}
-              >
-                {tabs.map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab)}
-                    className={cn(
-                      "py-3 whitespace-nowrap transition-colors relative flex items-center",
-                      activeTab === tab ? "text-[#FBFBFB]" : "text-[#7C8992]"
-                    )}
-                    style={{ 
-                      fontSize: '14px',
-                      fontWeight: 600
-                    }}
-                  >
-                    {tab}
-                    {tab === 'Artist' && tempArtists.length > 0 && (
-                      <div 
-                        className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
-                        style={{ 
-                          top: 'calc(50% - 10px)', 
-                          right: '-8px',
-                          transform: 'translateY(-50%)'
-                        }}
-                      />
-                    )}
-                    {tab === 'Season' && tempSeason && (
-                      <div 
-                        className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
-                        style={{ 
-                          top: 'calc(50% - 10px)', 
-                          right: '-8px',
-                          transform: 'translateY(-50%)'
-                        }}
-                      />
-                    )}
-                    {tab === 'Type' && tempTypes.length > 0 && (
-                      <div 
-                        className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
-                        style={{ 
-                          top: 'calc(50% - 10px)', 
-                          right: '-8px',
-                          transform: 'translateY(-50%)'
-                        }}
-                      />
-                    )}
-                    {tab === 'On/Offline' && tempOnlineStatus.length > 0 && (
-                      <div 
-                        className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
-                        style={{ 
-                          top: 'calc(50% - 10px)', 
-                          right: '-8px',
-                          transform: 'translateY(-50%)'
-                        }}
-                      />
-                    )}
-                    {activeTab === tab && (
-                      <motion.div 
-                        layoutId="activeTab"
-                        className="absolute bottom-0 bg-[#FBFBFB]"
-                        style={{ height: '1.3px', left: '-14px', right: '-14px' }}
-                      />
-                    )}
-                  </button>
-                ))}
+            {/* Tabs or Simple Title */}
+            {!simpleMode ? (
+              <div className="relative px-4">
+                <div 
+                  className="flex overflow-x-auto no-scrollbar border-b border-[#2B343B] justify-center"
+                  style={{ gap: '28px' }}
+                >
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={cn(
+                        "py-3 whitespace-nowrap transition-colors relative flex items-center",
+                        activeTab === tab ? "text-[#FBFBFB]" : "text-[#7C8992]"
+                      )}
+                      style={{ 
+                        fontSize: '14px',
+                        fontWeight: 600
+                      }}
+                    >
+                      {tab}
+                      {tab === 'Artist' && tempArtists.length > 0 && (
+                        <div 
+                          className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
+                          style={{ 
+                            top: 'calc(50% - 10px)', 
+                            right: '-8px',
+                            transform: 'translateY(-50%)'
+                          }}
+                        />
+                      )}
+                      {tab === 'Season' && tempSeason && (
+                        <div 
+                          className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
+                          style={{ 
+                            top: 'calc(50% - 10px)', 
+                            right: '-8px',
+                            transform: 'translateY(-50%)'
+                          }}
+                        />
+                      )}
+                      {tab === 'Type' && tempTypes.length > 0 && (
+                        <div 
+                          className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
+                          style={{ 
+                            top: 'calc(50% - 10px)', 
+                            right: '-8px',
+                            transform: 'translateY(-50%)'
+                          }}
+                        />
+                      )}
+                      {tab === 'On/Offline' && tempOnlineStatus.length > 0 && (
+                        <div 
+                          className="w-1 h-1 rounded-full bg-[#6E2CFF] absolute" 
+                          style={{ 
+                            top: 'calc(50% - 10px)', 
+                            right: '-8px',
+                            transform: 'translateY(-50%)'
+                          }}
+                        />
+                      )}
+                      {activeTab === tab && (
+                        <motion.div 
+                          layoutId="activeTab"
+                          className="absolute bottom-0 bg-[#FBFBFB]"
+                          style={{ height: '1.3px', left: '-14px', right: '-14px' }}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="px-6 pt-4 pb-2 flex justify-start">
+                <h2 className="text-[#FBFBFB] text-[18px] font-bold">Artist</h2>
+              </div>
+            )}
 
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto no-scrollbar">
@@ -472,12 +480,12 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
             {/* Footer */}
             <div className="flex flex-col bg-[#232A30]">
               {/* Selected List */}
-              {(tempArtists.length > 0 || tempTypes.length > 0 || tempOnlineStatus.length > 0 || tempSeason) && (
+              {(tempArtists.length > 0 || (!simpleMode && (tempTypes.length > 0 || tempOnlineStatus.length > 0 || tempSeason))) && (
                 <div 
                   className="flex items-center gap-x-4 px-6 py-2 bg-[#2A333A] overflow-x-auto no-scrollbar"
                   style={{ height: '38px' }}
                 >
-                  {tempSeason && (
+                  {tempSeason && !simpleMode && (
                     <div 
                       className="flex items-center gap-1 text-[#D2D7DB] flex-shrink-0"
                       style={{ 
@@ -500,7 +508,7 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
                   {tempArtists.map((name) => (
                     <div 
                       key={name} 
-                      className="flex items-center gap-1 text-[#D2D7DB]"
+                      className="flex items-center gap-1 text-[#D2D7DB] flex-shrink-0"
                       style={{ 
                         fontSize: '13px',
                         fontWeight: 500
@@ -518,7 +526,7 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
                   {tempTypes.map((type) => (
                     <div 
                       key={type} 
-                      className="flex items-center gap-1 text-[#D2D7DB]"
+                      className="flex items-center gap-1 text-[#D2D7DB] flex-shrink-0"
                       style={{ 
                         fontSize: '13px',
                         fontWeight: 500
@@ -536,7 +544,7 @@ export const ArtistFilterModal: React.FC<ArtistFilterModalProps> = ({
                   {tempOnlineStatus.map((status) => (
                     <div 
                       key={status} 
-                      className="flex items-center gap-1 text-[#D2D7DB]"
+                      className="flex items-center gap-1 text-[#D2D7DB] flex-shrink-0"
                       style={{ 
                         fontSize: '13px',
                         fontWeight: 500

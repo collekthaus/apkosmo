@@ -81,7 +81,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
       {/* New Tag */}
       {isNew && (
         <div 
-          className="absolute z-20 flex items-center justify-center font-['Pretendard']"
+          className="absolute z-30 flex items-center justify-center font-['Pretendard']"
           style={{
             top: '8px',
             left: '7px',
@@ -103,7 +103,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
       {/* Count Tag - Bottom Left */}
       {count && count > 1 && (
         <div 
-          className="absolute z-20 flex items-center justify-center font-['Pretendard']"
+          className="absolute z-30 flex items-center justify-center font-['Pretendard']"
           style={{
             bottom: '7px',
             left: '7px',
@@ -125,7 +125,7 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
       {/* Serial Tag - Bottom Left */}
       {serialTag && (
         <div 
-          className="absolute z-20 flex items-center justify-center font-['Pretendard']"
+          className="absolute z-30 flex items-center justify-center font-['Pretendard']"
           style={{
             bottom: '7px',
             left: '7px',
@@ -143,69 +143,81 @@ export const ObjektCard: React.FC<ObjektCardProps> = ({
           {serialTag}
         </div>
       )}
-      
+
       {/* Sidebar Border */}
       {showDetails && showBorder && (
-        <div 
-          className="absolute flex flex-col items-center justify-between pointer-events-none"
-          style={{ 
-            backgroundColor: objekt.borderColor,
-            width: `${values.borderWidth}%`,
-            height: `${values.borderHeight}%`,
-            right: `${values.borderX}%`,
-            top: `${values.borderY}%`,
-            transform: 'translateY(-50%)',
-            borderRadius: `${values.borderRadius}px 0 0 ${values.borderRadius}px`,
-            fontFamily: "'Inter', sans-serif"
-          }}
-        >
-          {/* Artist Name */}
+        <>
+          {/* Special Overlay */}
+          {objekt.Class === 'Special' && (
+            <img 
+              src="https://resources.cosmo.fans/images/collection-band/2025/08/14/06/raw/86207a80d354439cada0ec6c45e076ee20250814061643330.png"
+              alt="Special Overlay"
+              className="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none"
+              referrerPolicy="no-referrer"
+            />
+          )}
           <div 
-            className="absolute whitespace-nowrap"
-            style={{
-              top: `${values.artistY}%`,
-              left: `${values.artistX}%`,
-              transform: 'rotate(90deg) translateY(-50%)',
-              transformOrigin: 'left center',
-              textAlign: 'left',
-              fontSize: `${values.artistSize}px`,
-              color: objekt.textColor,
-              fontWeight: 700
+            className="absolute flex flex-col items-center justify-between pointer-events-none z-20"
+            style={{ 
+              backgroundColor: objekt.Class === 'Special' ? 'transparent' : objekt.borderColor,
+              width: `${values.borderWidth}%`,
+              height: `${values.borderHeight}%`,
+              right: `${values.borderX}%`,
+              top: `${values.borderY}%`,
+              transform: 'translateY(-50%)',
+              borderRadius: `${values.borderRadius}px 0 0 ${values.borderRadius}px`,
+              fontFamily: "'Inter', sans-serif",
+              overflow: 'hidden'
             }}
           >
-            {objekt.artist}
-          </div>
+            {/* Artist Name */}
+            <div 
+              className="absolute whitespace-nowrap"
+              style={{
+                top: `${values.artistY}%`,
+                left: `${values.artistX}%`,
+                transform: 'rotate(90deg) translateY(-50%)',
+                transformOrigin: 'left center',
+                textAlign: 'left',
+                fontSize: `${values.artistSize}px`,
+                color: objekt.textColor,
+                fontWeight: 700
+              }}
+            >
+              {objekt.artist}
+            </div>
 
-          {/* Logo */}
-          <div 
-            className="absolute flex items-center justify-center"
-            style={{
-              top: `${values.logoY}%`,
-              left: `${values.logoX}%`,
-              transform: 'translate(-50%, -50%) rotate(90deg)',
-              width: `${values.logoSize}px`,
-              height: `${values.logoSize}px`,
-              color: objekt.textColor
-            }}
-          >
-            <LogoIcon className="w-full h-full" />
-          </div>
+            {/* Logo */}
+            <div 
+              className="absolute flex items-center justify-center"
+              style={{
+                top: `${values.logoY}%`,
+                left: `${values.logoX}%`,
+                transform: 'translate(-50%, -50%) rotate(90deg)',
+                width: `${values.logoSize}px`,
+                height: `${values.logoSize}px`,
+                color: objekt.textColor
+              }}
+            >
+              <LogoIcon className="w-full h-full" />
+            </div>
 
-          {/* Type Number */}
-          <div 
-            className="absolute flex items-center justify-center whitespace-nowrap"
-            style={{
-              top: `${values.typeY}%`,
-              left: `${values.typeX}%`,
-              transform: 'translate(-50%, -50%) rotate(90deg)',
-              fontSize: `${values.typeSize}px`,
-              color: objekt.textColor,
-              fontWeight: 700
-            }}
-          >
-            {objekt.Type}
+            {/* Type Number */}
+            <div 
+              className="absolute flex items-center justify-center whitespace-nowrap"
+              style={{
+                top: `${values.typeY}%`,
+                left: `${values.typeX}%`,
+                transform: 'translate(-50%, -50%) rotate(90deg)',
+                fontSize: `${values.typeSize}px`,
+                color: objekt.textColor,
+                fontWeight: 700
+              }}
+            >
+              {objekt.Type}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </motion.div>
   );
